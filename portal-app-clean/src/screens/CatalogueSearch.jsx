@@ -8,19 +8,40 @@ const inr = (n) => "₹" + Number(n || 0).toLocaleString("en-IN");
 // Browse the full scraped catalogue across every source site. Shows the front
 // image, original (supplier) price, attributes, and the source — click the
 // source to open the actual product page in a new tab.
+const SORTS = [["newest", "Newest"], ["price_asc", "Price: low to high"], ["price_desc", "Price: high to low"], ["name", "Name A–Z"]];
+const lbl = { fontSize: 11, color: "#6b7688", marginBottom: 5 };
+
 export default function CatalogueSearch() {
   const [q, setQ] = useState("");
   const [category, setCategory] = useState("");
+  const [stock, setStock] = useState("");     // "" all | in | out
+  const [sort, setSort] = useState("newest");
+  const [size, setSize] = useState("");
+  const [brand, setBrand] = useState("");
+  const [source, setSource] = useState("");
+  const [priceMin, setPriceMin] = useState("");
+  const [priceMax, setPriceMax] = useState("");
+  const [sources, setSources] = useState([]);
   const [items, setItems] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  useEffect(() => { api.sources().then((r) => setSources(r.sources || [])).catch(() => {}); }, []);
+
+  function params() {
+    return {
+      ...(q && { q }), ...(category && { category }), ...(stock && { stock }),
+      ...(sort && sort !== "newest" && { sort }), ...(size && { size }),
+      ...(brand && { brand }), ...(source && { source }),
+      ...(priceMin && { price_min: priceMin }), ...(priceMax && { price_max: priceMax }),
+    };
+  }
   function load(reset) {
     const p = reset ? 1 : page + 1;
     setLoading(true); setError(null);
-    api.catalogue({ ...(q && { q }), ...(category && { category }), page: p, limit: 24 })
+    api.catalogue({ ...params(), page: p, limit: 24 })
       .then((r) => {
         setItems((prev) => (reset ? r.results : [...prev, ...r.results]));
         setHasMore(r.hasMore); setPage(p);
@@ -28,24 +49,73 @@ export default function CatalogueSearch() {
       .catch(setError)
       .finally(() => setLoading(false));
   }
-  // debounce search + category
-  useEffect(() => { const t = setTimeout(() => load(true), 300); return () => clearTimeout(t); /* eslint-disable-next-line */ }, [q, category]);
+  // debounce: reload from page 1 whenever any filter changes
+  useEffect(() => { const t = setTimeout(() => load(true), 300); return () => clearTimeout(t); /* eslint-disable-next-line */ }, [q, category, stock, sort, size, brand, source, priceMin, priceMax]);
+
+  function clearAll() { setQ(""); setCategory(""); setStock(""); setSort("newest"); setSize(""); setBrand(""); setSource(""); setPriceMin(""); setPriceMax(""); }
+  const activeFilters = [category, stock, size, brand, source, priceMin, priceMax].filter(Boolean).length + (sort !== "newest" ? 1 : 0);
 
   return (
     <div>
       <PageHead title="Catalogue search" sub="Every product across all our source sites — research what you can sell." />
 
-      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
-        <div style={{ position: "relative", flex: 1, minWidth: 240 }}>
-          <Search size={15} style={{ position: "absolute", left: 11, top: 11, color: "#9aa3b2" }} />
-          <input style={{ ...inputStyle, paddingLeft: 32 }} placeholder="Search by product name or brand…" value={q} onChange={(e) => setQ(e.target.value)} />
+      <Card style={{ marginBottom: 16 }}>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
+          <div style={{ position: "relative", flex: 1, minWidth: 220 }}>
+            <div style={lbl}>Search</div>
+            <Search size={15} style={{ position: "absolute", left: 11, top: 30, color: "#9aa3b2" }} />
+            <input style={{ ...inputStyle, paddingLeft: 32 }} placeholder="Product name or brand…" value={q} onChange={(e) => setQ(e.target.value)} />
+          </div>
+          <div>
+            <div style={lbl}>Category</div>
+            <select style={{ ...inputStyle, minWidth: 130 }} value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="">All</option><option value="watches">Watches</option><option value="shoes">Shoes</option>
+            </select>
+          </div>
+          <div>
+            <div style={lbl}>Stock</div>
+            <select style={{ ...inputStyle, minWidth: 120 }} value={stock} onChange={(e) => setStock(e.target.value)}>
+              <option value="">All</option><option value="in">In stock</option><option value="out">Out of stock</option>
+            </select>
+          </div>
+          <div>
+            <div style={lbl}>Sort</div>
+            <select style={{ ...inputStyle, minWidth: 150 }} value={sort} onChange={(e) => setSort(e.target.value)}>
+              {SORTS.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+            </select>
+          </div>
         </div>
-        <select style={{ ...inputStyle, maxWidth: 160 }} value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="">All categories</option>
-          <option value="watches">Watches</option>
-          <option value="shoes">Shoes</option>
-        </select>
-      </div>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end", marginTop: 12 }}>
+          <div>
+            <div style={lbl}>Brand</div>
+            <input style={{ ...inputStyle, width: 150 }} placeholder="e.g. Rolex" value={brand} onChange={(e) => setBrand(e.target.value)} />
+          </div>
+          <div>
+            <div style={lbl}>Size</div>
+            <input style={{ ...inputStyle, width: 90 }} placeholder="e.g. 44" value={size} onChange={(e) => setSize(e.target.value)} />
+          </div>
+          <div>
+            <div style={lbl}>Source site</div>
+            <select style={{ ...inputStyle, minWidth: 180 }} value={source} onChange={(e) => setSource(e.target.value)}>
+              <option value="">All sources</option>
+              {sources.map((s) => <option key={s.id} value={s.id}>{s.name} ({s.category})</option>)}
+            </select>
+          </div>
+          <div>
+            <div style={lbl}>Price (₹)</div>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              <input style={{ ...inputStyle, width: 80 }} type="number" placeholder="min" value={priceMin} onChange={(e) => setPriceMin(e.target.value)} />
+              <span style={{ color: "#9aa3b2" }}>–</span>
+              <input style={{ ...inputStyle, width: 80 }} type="number" placeholder="max" value={priceMax} onChange={(e) => setPriceMax(e.target.value)} />
+            </div>
+          </div>
+          {activeFilters > 0 && (
+            <button onClick={clearAll} style={{ background: "none", border: "none", color: "#3b6fd8", fontSize: 12.5, cursor: "pointer", padding: "9px 0" }}>
+              Clear filters ({activeFilters})
+            </button>
+          )}
+        </div>
+      </Card>
 
       <ErrorNote error={error} />
       {loading && items.length === 0 ? <Spinner /> : items.length === 0 ? <Card><Empty msg="No products match." /></Card> : (
