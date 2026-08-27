@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "portal-app-clean",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "portal-app-clean"],
+      "port": 5174
+    },
+    {
+      "name": "storefront",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "site"],
+      "port": 5175
+    }
+  ]
+}

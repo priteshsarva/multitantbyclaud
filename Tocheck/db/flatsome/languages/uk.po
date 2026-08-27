@@ -1,0 +1,2171 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: l10n-flatsome\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-15T11:40:51+00:00\n"
+"PO-Revision-Date: 2026-05-10 13:50+0300\n"
+"Last-Translator: \n"
+"Language-Team: Українська\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 3.9\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: "
+"__;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Textdomain-Support: yes\n"
+"X-Loco-Version: 2.8.4; wp-6.9.4; php-8.3.30\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#. Theme Name of the theme
+#: style.css
+#: inc/admin/admin-notice.php:75
+msgid "Flatsome"
+msgstr "
+
+#. Theme URI of the theme
+#: style.css
+msgid "http://flatsome.uxthemes.com"
+msgstr ""
+
+#. Description of the theme
+#: style.css
+msgid "Multi-Purpose Responsive WooCommerce Theme"
+msgstr ""
+
+#. Author of the theme
+#: style.css
+msgid "UX-Themes"
+msgstr ""
+
+#. Author URI of the theme
+#: style.css
+msgid "https://uxthemes.com"
+msgstr ""
+
+#: 404.php:22
+msgid "Oops! That page can&rsquo;t be found."
+msgstr "Юой, цю сторінку не знайдено."
+
+#: 404.php:25
+msgid "It looks like nothing was found at this location. Maybe try one of the links below or a search?"
+msgstr ""
+"Здається тут нічого немає. Спробуєте одне з посилань нижче або скористаєтеся "
+"пошуком?"
+
+#. translators: %1$s: Comment count, %2$s: Comment title
+#: comments.php:34
+#, php-format
+msgctxt "comments title"
+msgid "One thought on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
+msgstr[0] "%1$s коментар до &ldquo;%2$s&rdquo;"
+msgstr[1] "%1$s коментарі до &ldquo;%2$s&rdquo;"
+msgstr[2] "%1$s коментарів до &ldquo;%2$s&rdquo;"
+
+#: comments.php:49
+msgid "Comment navigation"
+msgstr "Навігація коментарями"
+
+#: comments.php:51
+msgid "Older Comments"
+msgstr "Попередні коментарі"
+
+#: comments.php:52
+msgid "Newer Comments"
+msgstr "Новіші коментарі"
+
+#: comments.php:63
+msgid "Comments are closed."
+msgstr "Коментування закрито."
+
+#: header.php:25
+msgid "Skip to content"
+msgstr "Пропустити"
+
+#: image.php:27
+#, php-format
+msgid "Published <span class=\"entry-date\"><time class=\"entry-date\" datetime=\"%1$s\">%2$s</time></span> at <a href=\"%3$s\" title=\"Link to full-size image\">%4$s &times; %5$s</a> in <a href=\"%6$s\" title=\"Return to %7$s\" rel=\"gallery\">%8$s</a>"
+msgstr ""
+"Опубліковано <span class=\"entry-date\"><time class=\"entry-date\" "
+"datetime=\"%1$s\">%2$s</time></span> at <a href=\"%3$s\" title=\"Link to "
+"full-size image\">%4$s &times; %5$s</a> in <a href=\"%6$s\" title=\"Return "
+"to %7$s\" rel=\"gallery\">%8$s</a>"
+
+#: image.php:39
+#: image.php:109
+#: inc/structure/structure-posts.php:168
+#: inc/structure/structure-posts.php:197
+msgid "Edit"
+msgstr "Редагувати"
+
+#: image.php:101
+#, php-format
+msgid "<a class=\"comment-link\" href=\"#respond\" title=\"Post a comment\">Post a comment</a> or leave a trackback: <a class=\"trackback-link\" href=\"%s\" title=\"Trackback URL for your post\" rel=\"trackback\">Trackback URL</a>."
+msgstr ""
+"<a class=\"comment-link\" href=\"#respond\" title=\"Залишити "
+"коментар\">Залишити коментар</a> або зворотне посилання: <a "
+"class=\"trackback-link\" href=\"%s\" title=\"URL зворотного посилання на ваш "
+"допис\" rel=\"trackback\">URL для трекбеку</a>."
+
+#: image.php:103
+#, php-format
+msgid "Comments are closed, but you can leave a trackback: <a class=\"trackback-link\" href=\"%s\" title=\"Trackback URL for your post\" rel=\"trackback\">Trackback URL</a>."
+msgstr ""
+"Коментарі закрито, але ви можете залишити зворотне посилання: <a "
+"class=\"trackback-link\" href=\"%s\" title=\"Trackback URL for your post\" "
+"rel=\"trackback\">Trackback URL</a>."
+
+#: image.php:105
+msgid "Trackbacks are closed, but you can <a class=\"comment-link\" href=\"#respond\" title=\"Post a comment\">post a comment</a>."
+msgstr ""
+"Зворотні посилання закрито, але ви можете <a class=\"comment-link\" "
+"href=\"#respond\" title=\"Залишити коментар\">залишити коментар</a>."
+
+#: image.php:107
+msgid "Both comments and trackbacks are currently closed."
+msgstr "Коментарі та зворотні посилання наразі закриті."
+
+#: image.php:114
+msgid "<span class=\"meta-nav\">&larr;</span> Previous"
+msgstr "<span class=\"meta-nav\">&larr;</span> Попередні"
+
+#: image.php:115
+msgid "Next <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Наступні <span class=\"meta-nav\">&rarr;</span>"
+
+#: inc/admin/admin-bar.php:94
+msgid "Activate Theme"
+msgstr "Активувати тему"
+
+#: inc/admin/admin-notice.php:21
+#, php-format
+msgid "<a href=\"%s\">Please enter your purchase code</a> to activate Flatsome and get one-click updates."
+msgstr ""
+"<a href=\"%s\">Будь ласка, введіть свій код покупки</a> щоб активувати тему "
+"Flatsome та отримувати оновлення в один клік."
+
+#: inc/admin/admin-notice.php:32
+msgid "Flatsome issues"
+msgstr "Проблеми з Flatsome"
+
+#: inc/admin/admin-notice.php:38
+#: inc/functions/function-site-health.php:53
+msgid "Manage registration"
+msgstr "Керування реєстрацією"
+
+#: inc/admin/admin-notice.php:43
+#: inc/admin/envato_setup/envato_setup.php:2022
+#: inc/functions/function-site-health.php:58
+#: template-parts/admin/envato/register-form.php:93
+msgid "Manage your licenses"
+msgstr "Керування ліцензіями"
+
+#. translators: %1$s: Theme name, %2$s: The URL to the status page.
+#: inc/admin/admin-notice.php:79
+#, php-format
+msgid "<strong>Your theme (%1$s) contains outdated copies of some Flatsome template files.</strong> These files may need updating to ensure they are compatible with the current version of Flatsome. Suggestions:"
+msgstr ""
+"<strong>Ваша тема (%1$s) містить застарілі копії деяких файлів батьківської "
+"теми Flatsome.</strong> Ці файли можливо потребують оновлення, для кращої "
+"сумісності з поточною версією теми Flatsome. Рекомендації:"
+
+#: inc/admin/admin-notice.php:82
+msgid "If you copied over a template file to change something, then you will need to copy the new version of the template and apply your changes again."
+msgstr ""
+"Якщо ви копіювали файл шаблону, щоб щось у ньому змінити — потрібно "
+"скопіювати нову версію шаблону та повторно застосувати свої зміни."
+
+#: inc/admin/admin-notice.php:83
+msgid "If you are unfamiliar with code/templates and resolving potential conflicts, reach out to a developer for assistance."
+msgstr ""
+"Якщо ви не знайомі з кодом/шаблонами та вирішенням можливих конфліктів — "
+"зверніться по допомогу до розробника."
+
+#: inc/admin/admin-notice.php:86
+msgid "Learn more about templates"
+msgstr "Дізнатися більше про шаблони"
+
+#: inc/admin/admin-notice.php:89
+msgid "View affected templates"
+msgstr "Переглянути шаблони яких стосується"
+
+#: inc/admin/advanced/functions/functions.facebook.php:162
+msgid "Connect Instagram Business accounts"
+msgstr "Підʼєднати бізнес-акаунт Інстаграму"
+
+#: inc/admin/advanced/functions/functions.facebook.php:169
+#: inc/admin/advanced/functions/functions.facebook.php:178
+msgid "Okay"
+msgstr "Гаразд"
+
+#: inc/admin/advanced/functions/functions.facebook.php:174
+msgid "No associated Instagram Business account was found for your Facebook user."
+msgstr ""
+"Не знайдено асоційованого бізнес-акаунту Instagram для вашого користувача "
+"facebook."
+
+#: inc/admin/advanced/functions/functions.facebook.php:229
+msgid "Cancel"
+msgstr "Відмінити"
+
+#: inc/admin/advanced/functions/functions.facebook.php:232
+msgid "Connect"
+msgstr "Зʼєднати"
+
+#: inc/admin/advanced/functions/functions.php:23
+msgid "Super Admin"
+msgstr "Супер-адмін"
+
+#: inc/admin/backend/menu/class-menu.php:89
+msgid "Flatsome menu item options"
+msgstr "Налаштування елементів меню Flatsome"
+
+#: inc/admin/backend/menu/class-menu.php:93
+msgid "Menu dropdown"
+msgstr "Випадаюче меню"
+
+#: inc/admin/backend/menu/class-menu.php:96
+msgid "Design"
+msgstr "Дизайн"
+
+#: inc/admin/backend/menu/class-menu.php:98
+msgid "Default"
+msgstr "За замовчуванням"
+
+#: inc/admin/backend/menu/class-menu.php:99
+msgid "Default (custom size)"
+msgstr "За замовчуванням (з власним розміром)"
+
+#: inc/admin/backend/menu/class-menu.php:100
+msgid "Container width"
+msgstr "Ширина контейнера"
+
+#: inc/admin/backend/menu/class-menu.php:101
+msgid "Full width"
+msgstr "На всю ширину"
+
+#: inc/admin/backend/menu/class-menu.php:104
+msgid "Select dropdown design."
+msgstr "Виберіть дизайн випадаючого меню."
+
+#: inc/admin/backend/menu/class-menu.php:108
+#: inc/admin/backend/menu/class-menu.php:159
+#: inc/admin/options/header/options-header-nav-vertical.php:55
+#: inc/admin/options/header/options-header-nav-vertical.php:146
+msgid "Width"
+msgstr "Ширина"
+
+#: inc/admin/backend/menu/class-menu.php:114
+msgid "Height (optional)"
+msgstr "Висота (опц.)"
+
+#: inc/admin/backend/menu/class-menu.php:120
+#: inc/widgets/widget-blocks.php:88
+msgid "UX Block"
+msgstr "UX-блок"
+
+#: inc/admin/backend/menu/class-menu.php:132
+msgid "Reveal"
+msgstr "Показати"
+
+#: inc/admin/backend/menu/class-menu.php:134
+msgid "On hover"
+msgstr "При наведенні"
+
+#: inc/admin/backend/menu/class-menu.php:135
+msgid "On click"
+msgstr "При кліку"
+
+#: inc/admin/backend/menu/class-menu.php:141
+msgid "Menu icon"
+msgstr "Іконка меню"
+
+#: inc/admin/backend/menu/class-menu.php:144
+msgid "Icon type"
+msgstr "Тип іконки"
+
+#: inc/admin/backend/menu/class-menu.php:146
+msgid "Media library"
+msgstr "Медіабібліотека"
+
+#: inc/admin/backend/menu/class-menu.php:147
+msgid "Custom content"
+msgstr "Власний вміст"
+
+#: inc/admin/backend/menu/class-menu.php:163
+#: inc/admin/options/header/options-header-nav-vertical.php:41
+msgid "Height"
+msgstr "Висота"
+
+#: inc/admin/backend/menu/class-menu.php:166
+msgid "Icons default (empty) to 20x20."
+msgstr "Якщо розмір іконки не задано — буде 20×20."
+
+#: inc/admin/backend/menu/class-menu.php:171
+msgid "Markup"
+msgstr "Розмітка"
+
+#: inc/admin/backend/menu/class-menu.php:174
+msgid "Add any HTML, SVG or shortcode here."
+msgstr "Додайте сюди будь-який HTML, SVG чи шорткод."
+
+#: inc/admin/backend/menu/class-menu.php:245
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:237
+msgid "Select image"
+msgstr "Вибрати зображення"
+
+#: inc/admin/backend/menu/class-menu.php:250
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:238
+msgid "Remove"
+msgstr "Вилучити"
+
+#: inc/admin/classes/class-features.php:30
+msgid "Features"
+msgstr "Функції"
+
+#: inc/admin/classes/class-features.php:37
+msgid "Experimental features"
+msgstr "Експериментальні функції"
+
+#: inc/admin/classes/class-features.php:81
+msgid "There are currently no experimental features in development."
+msgstr "Наразі немає експериментальних функцій у розробці."
+
+#: inc/admin/classes/class-features.php:83
+msgid "Features that are testable while they're in development. These features are likely to change, so avoid using them in production."
+msgstr ""
+"Функції, які можна тестувати під час розробки. Ці функції можуть змінитися, "
+"тому уникайте їх використання на робочому сайті."
+
+#. translators: %s: PHP version.
+#: inc/admin/classes/class-features.php:132
+#, php-format
+msgid "This feature requires PHP version %s or higher."
+msgstr "Ця функція потребує PHP версії %s або вище."
+
+#. translators: %s: WordPress version.
+#: inc/admin/classes/class-features.php:136
+#, php-format
+msgid "This feature requires WordPress version %s or higher."
+msgstr "Ця функція потребує WordPress версії %s або вище."
+
+#: inc/admin/classes/class-status.php:559
+#: inc/admin/classes/class-status.php:587
+msgid "Theme"
+msgstr "Тема"
+
+#: inc/admin/classes/class-status.php:560
+#: inc/admin/classes/class-status.php:700
+msgid "WordPress environment"
+msgstr "Середовище WordPress"
+
+#: inc/admin/classes/class-status.php:561
+#: inc/admin/classes/class-status.php:812
+msgid "Server environment"
+msgstr "Середовище сервера"
+
+#: inc/admin/classes/class-status.php:562
+#: inc/admin/classes/class-status.php:894
+#: inc/functions/function-site-health.php:31
+msgid "Security"
+msgstr "Безпека"
+
+#: inc/admin/classes/class-status.php:563
+#: inc/admin/classes/class-status.php:950
+msgid "Database"
+msgstr "База даних"
+
+#: inc/admin/classes/class-status.php:564
+#: inc/admin/classes/class-status.php:988
+msgid "Templates"
+msgstr "Шаблони"
+
+#: inc/admin/classes/class-status.php:568
+msgid "More details"
+msgstr "Більше деталей"
+
+#: inc/admin/classes/class-status.php:593
+msgid "Name"
+msgstr "Імʼя"
+
+#: inc/admin/classes/class-status.php:595
+msgid "The name of the current active theme."
+msgstr "Назва активної теми."
+
+#: inc/admin/classes/class-status.php:600
+msgid "Version"
+msgstr "Версія"
+
+#: inc/admin/classes/class-status.php:602
+msgid "The version of the current active theme."
+msgstr "Версія поточної активної теми."
+
+#: inc/admin/classes/class-status.php:607
+msgid "Author URL"
+msgstr "URL автора"
+
+#: inc/admin/classes/class-status.php:609
+msgid "The theme developers URL."
+msgstr "URL розробників теми."
+
+#: inc/admin/classes/class-status.php:614
+msgid "Registered"
+msgstr "Зареєстровано"
+
+#: inc/admin/classes/class-status.php:616
+msgid "Displays whether or not the theme is registered."
+msgstr "Показувати чи ні, що тема є зареєстрована."
+
+#: inc/admin/classes/class-status.php:623
+msgid "You should register Flatsome with a purchase code"
+msgstr "Вам слід зареєструвати Flatsome за допомогою коду покупки"
+
+#: inc/admin/classes/class-status.php:629
+msgid "Child theme"
+msgstr "Дочірня тема"
+
+#: inc/admin/classes/class-status.php:631
+msgid "Displays whether or not the current active theme is a child theme."
+msgstr "Показувати чи ні, що поточна активна тема є дочірньою темою."
+
+#. translators: %s: Docs link.
+#: inc/admin/classes/class-status.php:639
+#, php-format
+msgid "If you are modifying Flatsome on the parent theme we recommend using a child theme. See: <a href=\"%s\" target=\"_blank\">How to create a child theme</a>"
+msgstr ""
+"Якщо ви модифікуєте файли батьківської теми Flatsome, рекомендуємо натомість "
+"використовувати дочірню тему. Дивіться: <a href=\"%s\" target=\"_blank\">Як "
+"створити дочірню тему</a>"
+
+#: inc/admin/classes/class-status.php:645
+msgid "Release channel"
+msgstr "Канал отримання релізів"
+
+#: inc/admin/classes/class-status.php:647
+msgid "Which updates to receive on this site."
+msgstr "Які оновлення отримувати для цього сайту."
+
+#: inc/admin/classes/class-status.php:661
+msgid "Parent theme name"
+msgstr "Назва батьківської теми"
+
+#: inc/admin/classes/class-status.php:663
+msgid "The name of the parent theme."
+msgstr "Назва батьківської теми."
+
+#: inc/admin/classes/class-status.php:668
+msgid "Parent theme version"
+msgstr "Версія батьківської теми"
+
+#: inc/admin/classes/class-status.php:670
+msgid "The installed version of the parent theme."
+msgstr "Встановлена версія батьківської теми."
+
+#: inc/admin/classes/class-status.php:675
+msgid "Parent theme author URL"
+msgstr "URL автора батьківської теми"
+
+#: inc/admin/classes/class-status.php:677
+msgid "The parent theme developers URL."
+msgstr "URL розробників батьківської теми."
+
+#: inc/admin/classes/class-status.php:706
+msgid "WordPress version"
+msgstr "Версія WordPress"
+
+#: inc/admin/classes/class-status.php:708
+msgid "The installed WordPress version (indicates the fulfillment of the minimum required version)."
+msgstr ""
+"Встановлена версія WordPress (показує, чи виконується мінімальна вимога)."
+
+#. translators: %s: The minimum required WP version number.
+#: inc/admin/classes/class-status.php:717
+#, php-format
+msgid "The theme requires WordPress version %s or above."
+msgstr "Тема потребує WordPress версії %s або вище."
+
+#: inc/admin/classes/class-status.php:729
+msgid "WooCommerce version"
+msgstr "Версія WooCommerce"
+
+#: inc/admin/classes/class-status.php:731
+msgid "The installed WooCommerce version (indicates the fulfillment of the minimum required version)."
+msgstr ""
+"Встановлена версія WooCommerce (показує, чи виконується мінімальна вимога)."
+
+#. translators: %s: The minimum required WC version number.
+#: inc/admin/classes/class-status.php:740
+#, php-format
+msgid "The theme requires WooCommerce version %s or above."
+msgstr "Тема потребує WooCommerce версії %s або вище."
+
+#: inc/admin/classes/class-status.php:752
+msgid "WordPress memory limit"
+msgstr "Ліміт пам'яті WordPress"
+
+#: inc/admin/classes/class-status.php:754
+msgid "The maximum amount of memory (RAM) that your site can use at one time."
+msgstr ""
+"Максимальний обсяг пам'яті (RAM), який сайт може використовувати одночасно."
+
+#. translators: %1$s: Memory limit, %2$s: Docs link.
+#: inc/admin/classes/class-status.php:761
+#, php-format
+msgid "%1$s - We recommend setting memory to at least 256MB. See: %2$s"
+msgstr ""
+"%1$s - Ми рекомендуємо встановити не менше 256MB памʼяті. Дивіться: %2$s"
+
+#. translators: %1$s: Memory limit, %2$s: Docs link.
+#: inc/admin/classes/class-status.php:761
+msgid "Increasing memory allocated to PHP"
+msgstr "Збільшити кількість памʼяті призначеної для PHP"
+
+#: inc/admin/classes/class-status.php:768
+msgid "WordPress image sizes"
+msgstr "Розміри зображень WordPress"
+
+#: inc/admin/classes/class-status.php:770
+msgid "The image sizes that are registered on this site."
+msgstr "Розміри зображень, зареєстровані на цьому сайті."
+
+#: inc/admin/classes/class-status.php:818
+msgid "Server info"
+msgstr "Про сервер"
+
+#: inc/admin/classes/class-status.php:819
+msgid "Information about the web server that is currently hosting your site."
+msgstr "Інформація про веб-сервер, на якому зараз розміщується ваш сайт."
+
+#: inc/admin/classes/class-status.php:823
+msgid "PHP version"
+msgstr "Версія PHP"
+
+#: inc/admin/classes/class-status.php:825
+msgid "The version of PHP installed on your hosting server."
+msgstr "Версія PHP, встановлена на вашому хостинг-сервері."
+
+#. translators: %s: The recommended PHP version number.
+#: inc/admin/classes/class-status.php:837
+#, php-format
+msgid "We recommend using PHP version %s or above for greater performance and security."
+msgstr ""
+"Для кращої продуктивності та безпеки рекомендуємо використовувати PHP версії "
+"%s або вище."
+
+#: inc/admin/classes/class-status.php:848
+msgid "PHP post max size"
+msgstr "Максимальний розмір POST-запиту PHP"
+
+#: inc/admin/classes/class-status.php:850
+msgid "The largest filesize that can be contained in one post."
+msgstr "Максимальний розмір файлу, який може бути в одному запиті."
+
+#: inc/admin/classes/class-status.php:855
+msgid "PHP time limit"
+msgstr "Ліміт часу виконання PHP"
+
+#: inc/admin/classes/class-status.php:857
+msgid "The amount of time (in seconds) that your site will spend on a single operation before timing out (to avoid server lockups)."
+msgstr ""
+"Час (у секундах), який сайт може витрачати на одну операцію до тайм-ауту "
+"(щоб уникнути зависань сервера)."
+
+#: inc/admin/classes/class-status.php:862
+msgid "PHP max input variables"
+msgstr "Максимум змінних PHP (max_input_vars)"
+
+#: inc/admin/classes/class-status.php:864
+msgid "The maximum number of variables your server can use for a single function to avoid overloads."
+msgstr ""
+"Максимальна кількість змінних, які сервер може використати для однієї "
+"функції, щоб уникнути перевантажень."
+
+#: inc/admin/classes/class-status.php:870
+msgid "Max upload size"
+msgstr "Максимальний розмір завантаження"
+
+#: inc/admin/classes/class-status.php:872
+msgid "The largest filesize that can be uploaded to your WordPress installation."
+msgstr "Максимальний розмір файлу, який можна завантажити на WordPress."
+
+#: inc/admin/classes/class-status.php:900
+msgid "Secure connection (HTTPS)"
+msgstr "Безпечне з'єднання (HTTPS)"
+
+#: inc/admin/classes/class-status.php:902
+msgid "Is the connection to your site secure?"
+msgstr "Чи безпечне зʼєднання з вашим сайтом?"
+
+#. translators: %s: Docs link.
+#: inc/admin/classes/class-status.php:911
+#, php-format
+msgid "Your site is not using HTTPS. <a href=\"%s\" target=\"_blank\">Learn more about HTTPS and SSL Certificates</a>."
+msgstr ""
+"Ваш сайт не використовує HTTPS. <a href=\"%s\" target=\"_blank\">Дізнатися "
+"більше про HTTPS і SSL-сертифікати</a>."
+
+#: inc/admin/classes/class-status.php:918
+msgid "Hide errors from visitors"
+msgstr "Приховати помилки від відвідувачів"
+
+#: inc/admin/classes/class-status.php:920
+msgid "Error messages can contain sensitive information about your site environment. These should be hidden from untrusted visitors."
+msgstr ""
+"Повідомлення про помилки можуть містити конфіденційну інформацію про "
+"середовище вашого сайту. Їх слід приховувати від сторонніх відвідувачів."
+
+#: inc/admin/classes/class-status.php:927
+msgid "Error messages should not be shown to visitors."
+msgstr "Повідомлення про помилки не повинні відображатися відвідувачам."
+
+#: inc/admin/classes/class-status.php:956
+msgid "Flatsome database version"
+msgstr "Версія бази даних Flatsome"
+
+#: inc/admin/classes/class-status.php:958
+msgid "The database version for Flatsome. This should be the same as the parent theme version."
+msgstr "Версія бази даних Flatsome. Має збігатися з версією батьківської теми."
+
+#: inc/admin/classes/class-status.php:965
+msgid "This should be the same as the parent theme version."
+msgstr "Має збігатися з версією батьківської теми."
+
+#: inc/admin/classes/class-status.php:994
+msgid "Overrides"
+msgstr "Перевизначення шаблонів"
+
+#: inc/admin/classes/class-status.php:995
+msgid "This section shows any files that are overriding the default Flatsome templates."
+msgstr ""
+"У цьому розділі показано файли, які перевизначають стандартні шаблони "
+"Flatsome."
+
+#. translators: %1$s: Template name, %2$s: Template version, %3$s: Core version.
+#: inc/admin/classes/class-status.php:1008
+#, php-format
+msgid "%1$s version %2$s is out of date. The core version is %3$s"
+msgstr "%1$s версія %2$s не актуальна. Поточна базова версія %3$s"
+
+#: inc/admin/envato_setup/envato_setup.php:2015
+msgid "Register Theme"
+msgstr "Зареєструвати тему"
+
+#: inc/admin/envato_setup/envato_setup.php:2040
+msgid "Continue"
+msgstr "Продовжити"
+
+#: inc/admin/envato_setup/envato_setup.php:2041
+msgid "Unregister"
+msgstr "Відкликати реєстрацію"
+
+#: inc/admin/envato_setup/envato_setup.php:2043
+msgid "Register"
+msgstr "Зареєструвати"
+
+#: inc/admin/gutenberg/class-gutenberg.php:119
+msgid "Edit with UX Builder"
+msgstr "Редагувати з UX Builder"
+
+#: inc/admin/options/blog/options-blog-single.php:85
+msgid "Featured image"
+msgstr "Головне фото"
+
+#: inc/admin/options/blog/options-blog-single.php:101
+msgid "Share icons"
+msgstr "Іконки поширення"
+
+#: inc/admin/options/blog/options-blog-single.php:109
+msgid "Meta"
+msgstr "Мета"
+
+#: inc/admin/options/blog/options-blog-single.php:117
+msgid "Blog author box"
+msgstr "Бокс автора блогу"
+
+#: inc/admin/options/blog/options-blog-single.php:125
+msgid "Next/Prev navigation"
+msgstr "Навігація Далі/Назад"
+
+#: inc/admin/options/blog/options-blog-single.php:133
+msgid "HTML after blog posts"
+msgstr "HTML після допису у блозі"
+
+#: inc/admin/options/header/options-header-cart.php:115
+msgid "Show quantity input"
+msgstr "Показувати поле кількості"
+
+#: inc/admin/options/header/options-header-cart.php:125
+#: inc/admin/options/shop/options-shop-cart-checkout.php:81
+#: inc/admin/options/shop/options-shop-cart-checkout.php:278
+msgid "Show free shipping"
+msgstr "Показувати безкоштовну доставку"
+
+#: inc/admin/options/header/options-header-cart.php:156
+#: inc/admin/options/styles/options-lightbox.php:30
+msgid "Drawer width"
+msgstr "Ширина шторки"
+
+#: inc/admin/options/header/options-header-cart.php:165
+msgid "Sticky footer"
+msgstr "Закріплений футер"
+
+#: inc/admin/options/header/options-header-cart.php:175
+msgid "Show cross sells"
+msgstr "Показувати супутні товари (cross-sells)"
+
+#: inc/admin/options/header/options-header-logo.php:105
+msgid "Logo link"
+msgstr "Посилання логотипу"
+
+#: inc/admin/options/header/options-header-logo.php:106
+msgid "Custom logo link (defaults to home page link if empty)."
+msgstr "Власне посилання логотипу (якщо порожнє — посилається на головну)."
+
+#: inc/admin/options/header/options-header-mobile.php:100
+msgid "Menu item behavior"
+msgstr "Поведінка елементів меню"
+
+#: inc/admin/options/header/options-header-mobile.php:101
+msgid "Click behavior for menu items with a submenu"
+msgstr "Поведінка при кліку для елементів меню, які мають підменю"
+
+#: inc/admin/options/header/options-header-mobile.php:106
+msgid "Open link"
+msgstr "Відкрити посилання"
+
+#: inc/admin/options/header/options-header-mobile.php:107
+msgid "Toggle submenu"
+msgstr "Перемкнути підменю"
+
+#: inc/admin/options/header/options-header-mobile.php:114
+msgid "Submenu effect"
+msgstr "Ефект підменю"
+
+#: inc/admin/options/header/options-header-mobile.php:119
+msgid "Accordion"
+msgstr "Акордеон"
+
+#: inc/admin/options/header/options-header-mobile.php:120
+msgid "Slide"
+msgstr "Слайд"
+
+#: inc/admin/options/header/options-header-mobile.php:134
+msgid "Submenu levels"
+msgstr "Рівні підменю"
+
+#: inc/admin/options/header/options-header-mobile.php:139
+msgid "1 level"
+msgstr "1 рівень"
+
+#: inc/admin/options/header/options-header-mobile.php:140
+msgid "2 levels"
+msgstr "2 рівні"
+
+#: inc/admin/options/header/options-header-mobile.php:159
+msgid "Top content"
+msgstr "Верхній контент"
+
+#: inc/admin/options/header/options-header-mobile.php:168
+msgid "Tabs"
+msgstr "Вкладки"
+
+#: inc/admin/options/header/options-header-mobile.php:172
+msgid "None"
+msgstr "Немає"
+
+#: inc/admin/options/header/options-header-mobile.php:173
+msgid "2 Tabs"
+msgstr "2 вкладки"
+
+#: inc/admin/options/header/options-header-mobile.php:180
+msgid "Tab 1 text"
+msgstr "Текст вкладки 1"
+
+#: inc/admin/options/header/options-header-mobile.php:195
+msgid "Menu elements"
+msgstr "Елементи меню"
+
+#: inc/admin/options/header/options-header-mobile.php:206
+msgid "Tab 2 text"
+msgstr "Текст вкладки 2"
+
+#: inc/admin/options/header/options-header-mobile.php:221
+msgid "Menu elements tab 2"
+msgstr "Елементи меню на вкладці 2"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:9
+#: inc/functions/function-setup.php:120
+msgid "Vertical Menu"
+msgstr "Вертикальне меню"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:28
+msgid "Icon"
+msgstr "Іконка"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:69
+msgid "Tag line"
+msgstr "Слоган"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:78
+msgid "Text"
+msgstr "Текст"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:87
+#: inc/admin/options/header/options-header-nav-vertical.php:201
+msgid "Text base color"
+msgstr "Базовий колір тексту"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:101
+msgid "Color"
+msgstr "Колір"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:111
+#: inc/admin/options/header/options-header-nav-vertical.php:161
+msgid "Background color"
+msgstr "Колір фону"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:128
+msgid "Keep open on front page"
+msgstr "Тримати відкритим на головній сторінці"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:137
+msgid "Add shadow"
+msgstr "Додати тінь"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:178
+msgid "Divider"
+msgstr "Розділювач"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:187
+msgid "Nav height"
+msgstr "Навігація висота"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:215
+msgid "Nav color"
+msgstr "Навігація колір"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:225
+msgid "Nav color :hover"
+msgstr "Навігація колір :ховер"
+
+#: inc/admin/options/header/options-header-nav-vertical.php:235
+msgid "Nav background color :hover"
+msgstr "Навігація колір фону :ховер"
+
+#: inc/admin/options/notifications/options-notifications.php:140
+#: inc/extensions/flatsome-cookie-notice/flatsome-cookie-notice.php:43
+msgid "This site uses cookies to offer you a better browsing experience. By browsing this website, you agree to our use of cookies."
+msgstr ""
+"Цей сайт використовує файли cookie для зручнішого перегляду. Продовжуючи "
+"користуватися сайтом, ви погоджуєтеся на використання cookie."
+
+#: inc/admin/options/portfolio/options-portfolio.php:76
+msgid "Show share icons"
+msgstr "Показувати іконки поширення"
+
+#: inc/admin/options/shop/options-shop-cart-checkout.php:65
+msgid "Boxed Shipping labels"
+msgstr "Бокс-стиль для бейджів доставки"
+
+#: inc/admin/options/shop/options-shop-cart-checkout.php:73
+msgid "Show shipping estimate destination"
+msgstr "Показувати країну/регіон у розрахунку доставки"
+
+#: inc/admin/options/shop/options-shop-category.php:260
+msgid "Show result count"
+msgstr "Показувати кількість результатів"
+
+#: inc/admin/options/shop/options-shop-category.php:269
+msgid "Show catalog ordering"
+msgstr "Показувати сортування каталогу"
+
+#: inc/admin/options/shop/options-shop-category.php:802
+#: inc/admin/options/shop/options-shop-product-page.php:508
+msgid "Color :selected"
+msgstr "Колір :вибраний"
+
+#: inc/admin/options/shop/options-shop-category.php:838
+#: inc/admin/options/shop/options-shop-product-page.php:490
+msgid "Inactive out of stock"
+msgstr "Неактивні (немає в наявності)"
+
+#: inc/admin/options/shop/options-shop-category.php:839
+#: inc/admin/options/shop/options-shop-product-page.php:491
+msgid "Show out of stock items as inactive."
+msgstr "Показувати товари, яких немає в наявності, як неактивні."
+
+#: inc/admin/options/shop/options-shop-product-page.php:41
+#: inc/woocommerce/structure-wc-category-page.php:141
+#: inc/woocommerce/structure-wc-product-page-fields.php:22
+msgid "Custom product layout"
+msgstr "Власний вигляд товару"
+
+#: inc/admin/options/shop/options-shop-product-page.php:469
+msgid "Layout"
+msgstr "Розміщення"
+
+#: inc/admin/options/shop/options-shop-product-page.php:481
+msgid "Tooltip"
+msgstr "Підказка"
+
+#: inc/admin/options/shop/options-shop-product-page.php:482
+msgid "Show a tooltip with the term or term description."
+msgstr "Показувати підказку з назвою або описом терміну."
+
+#: inc/admin/options/shop/options-shop-product-page.php:499
+msgid "Disable deselection"
+msgstr "Заборонити відміну вибору"
+
+#: inc/admin/options/social/options-social.php:83
+#: inc/admin/options/social/options-social.php:170
+#: inc/shortcodes/follow.php:191
+msgctxt "social media"
+msgid "X"
+msgstr "Х"
+
+#: inc/admin/options/styles/options-colors.php:144
+msgid "Tooltip colors"
+msgstr "Кольори підказки"
+
+#: inc/admin/options/styles/options-colors.php:150
+msgid "Tooltip color"
+msgstr "Колір підказки"
+
+#: inc/admin/options/styles/options-colors.php:159
+msgid "Tooltip background color"
+msgstr "Колір фону підказки"
+
+#: inc/admin/panel/sections/tab-activate.php:12
+msgid "Theme registration"
+msgstr "Реєстрація теми"
+
+#: inc/admin/panel/sections/tab-activate.php:17
+msgid "Status"
+msgstr "Статус"
+
+#: inc/classes/class-flatsome-base-registration.php:49
+#: inc/classes/class-flatsome-base-registration.php:58
+#: inc/classes/class-flatsome-base-registration.php:67
+#: inc/classes/class-flatsome-base-registration.php:77
+msgid "Not allowed."
+msgstr "Не дозволено."
+
+#. translators: %s: Time left.
+#: inc/classes/class-flatsome-envato-admin.php:152
+#, php-format
+msgid "Please try again in %s."
+msgstr "Будь ласка, спробуйте знову через %s."
+
+#: inc/classes/class-flatsome-envato-admin.php:192
+msgid "You must agree to the Envato License Terms."
+msgstr "Ви маєте погодитися на ліцензійні умови Envato."
+
+#: inc/classes/class-flatsome-registration.php:34
+msgid "No purchase code provided."
+msgstr "Не надано код покупки."
+
+#: inc/classes/class-flatsome-registration.php:36
+msgid "The provided value seems to be a token. Please register with a purchase code instead."
+msgstr ""
+"Введене значення схоже на токен. Будь ласка, реєструйтеся за допомогою коду "
+"покупки."
+
+#: inc/classes/class-flatsome-registration.php:38
+msgid "Invalid purchase code."
+msgstr "Не вірний код покупки."
+
+#: inc/classes/class-flatsome-registration.php:55
+msgid "Your site is registered. But the purchase code could not be verified at the moment."
+msgstr "Ваш сайт зареєстровано. Але код покупки наразі неможливо підтвердити."
+
+#: inc/classes/class-flatsome-registration.php:105
+#: inc/classes/class-flatsome-registration.php:148
+msgid "No purchase code."
+msgstr "Немає коду покупки."
+
+#: inc/classes/class-flatsome-registration.php:128
+msgid "No version received."
+msgstr "Не отримано версію."
+
+#: inc/classes/class-flatsome-registration.php:132
+msgid "Invalid version received."
+msgstr "Не вірна версія."
+
+#: inc/classes/class-flatsome-registration.php:159
+msgid "No URL received."
+msgstr "Не отримано URL."
+
+#: inc/classes/class-flatsome-registration.php:163
+msgid "Invalid URL received."
+msgstr "Не вірний URL."
+
+#: inc/classes/class-flatsome-relay.php:230
+#: inc/extensions/flatsome-infinite-scroll/templates/button.php:2
+msgid "Load more"
+msgstr "Показати ще"
+
+#: inc/classes/class-flatsome-relay.php:241
+#: inc/classes/class-flatsome-relay.php:289
+#: inc/structure/structure-posts.php:303
+#: woocommerce/loop/pagination.php:58
+#: woocommerce/single-product-reviews.php:66
+msgid "Previous"
+msgstr "Назад"
+
+#: inc/classes/class-flatsome-relay.php:246
+#: inc/classes/class-flatsome-relay.php:288
+#: inc/structure/structure-posts.php:302
+#: woocommerce/loop/pagination.php:57
+#: woocommerce/single-product-reviews.php:65
+msgid "Next"
+msgstr "Далі"
+
+#: inc/classes/class-flatsome-wupdates-registration.php:65
+#: inc/classes/class-flatsome-wupdates-registration.php:75
+msgid "Purchase code not verified."
+msgstr "Код покупки не підтверджено."
+
+#. translators: %d: The status code.
+#: inc/classes/class-uxthemes-api.php:78
+#, php-format
+msgid "Sorry, an error occurred while accessing the API. Error %d"
+msgstr "На жаль, сталася помилка при зверненні до API. Помилка %d"
+
+#: inc/classes/class-uxthemes-api.php:119
+msgid "Your purchase code is malformed."
+msgstr "Ваш код покупки має невірний формат."
+
+#: inc/classes/class-uxthemes-api.php:122
+msgid "Sorry, an error occurred. Please try again."
+msgstr "На жаль, сталася помилка. Спробуйте ще раз."
+
+#: inc/classes/class-uxthemes-api.php:125
+msgid "Flatsome was unable to get the latest version. Your site might have changed domain after you registered it."
+msgstr ""
+"Не вдалося отримати останню версію Flatsome. Можливо, домен вашого сайту "
+"змінився після реєстрації."
+
+#: inc/classes/class-uxthemes-api.php:130
+msgid "Flatsome was unable to get the latest version because the purchase code has not been verified yet. Please re-register it in order to receive updates."
+msgstr ""
+"Не вдалося отримати останню версію Flatsome, оскільки код покупки ще не "
+"підтверджено. Будь ласка, перереєструйте його, щоб отримувати оновлення."
+
+#: inc/classes/class-uxthemes-api.php:135
+msgid "The purchase code is malformed or does not belong to a Flatsome sale."
+msgstr "Код покупки має невірний формат або не належить до купівлі Flatsome."
+
+#. translators: %s: License manager link attributes.
+#: inc/classes/class-uxthemes-api.php:139
+#, php-format
+msgid "The registration was not found for <a%s>your account</a>. It was only deleted on this site."
+msgstr ""
+"Реєстрацію не знайдено у <a%s>вашому акаунті</a>. Її було видалено лише на "
+"цьому сайті."
+
+#. translators: %s: License manager link attributes.
+#: inc/classes/class-uxthemes-api.php:143
+#, php-format
+msgid "Flatsome was unable to get the latest version. Your registration might have been deleted from <a%s>your account</a>."
+msgstr ""
+"Не вдалося отримати останню версію Flatsome. Можливо, вашу реєстрацію було "
+"видалено з <a%s>вашого акаунту</a>."
+
+#: inc/classes/class-uxthemes-api.php:146
+msgid "Flatsome was unable to get the latest version. Your purchase code is malformed."
+msgstr ""
+"Не вдалося отримати останню версію Flatsome. Ваш код покупки має невірний "
+"формат."
+
+#. translators: %s: License manager link attributes.
+#: inc/classes/class-uxthemes-api.php:152
+#, php-format
+msgid "Your purchase code has been used on too many sites. Please go to <a%s>your account</a> and manage your licenses."
+msgstr ""
+"Ваш код покупки використано на занадто великій кількості сайтів. Перейдіть "
+"до <a%s>вашого акаунту</a> та керуйте ліцензіями."
+
+#. translators: %s: Guide document link attributes.
+#: inc/classes/class-uxthemes-api.php:155
+#, php-format
+msgid "This purchase code is already registered. Please follow <a%s>this guide</a> to re-register Flatsome."
+msgstr ""
+"Цей код покупки вже зареєстровано. Будь ласка, скористайтеся <a%s>цією "
+"інструкцією</a>, щоб перереєструвати Flatsome."
+
+#: inc/classes/class-uxthemes-api.php:158
+msgid "Your purchase code has been blocked. Please contact support to resolve the issue."
+msgstr ""
+"Ваш код покупки заблоковано. Будь ласка, зверніться до підтримки для "
+"вирішення проблеми."
+
+#: inc/classes/class-uxthemes-api.php:161
+msgid "The purchase code does not belong to a Flatsome sale."
+msgstr "Цей код покупки не належить до купівлі Flatsome."
+
+#: inc/classes/class-uxthemes-api.php:164
+msgid "Flatsome was unable to get the latest version. The purchase code does not belong to a Flatsome sale."
+msgstr ""
+"Не вдалося отримати останню версію Flatsome. Цей код покупки не належить до "
+"купівлі Flatsome."
+
+#: inc/classes/class-uxthemes-api.php:166
+msgid "The requested resource no longer exists."
+msgstr "Запитуваний ресурс більше не існує."
+
+#: inc/classes/class-uxthemes-api.php:168
+msgid "No domain was sent with the request."
+msgstr "Запит не містить доменне ім'я."
+
+#: inc/classes/class-uxthemes-api.php:170
+msgid "Unable to parse the domain for your site."
+msgstr "Не вдалося розпізнати домен вашого сайту."
+
+#: inc/classes/class-uxthemes-api.php:173
+msgid "Your purchase code has been locked. Please contact support to resolve the issue."
+msgstr ""
+"Ваш код покупки тимчасово заблоковано. Будь ласка, зверніться до підтримки "
+"для вирішення проблеми."
+
+#: inc/classes/class-uxthemes-api.php:175
+msgid "The requested resource has been locked."
+msgstr "Запитуваний ресурс заблоковано."
+
+#: inc/classes/class-uxthemes-api.php:177
+msgid "Sorry, the API is overloaded."
+msgstr "На жаль, API перевантажено."
+
+#: inc/classes/class-uxthemes-api.php:179
+msgid "Sorry, the API is unavailable at the moment."
+msgstr "На жаль, API наразі недоступне."
+
+#: inc/extensions/flatsome-cookie-notice/flatsome-cookie-notice.php:54
+msgctxt "cookie notice"
+msgid "More info"
+msgstr "Більше інфо"
+
+#: inc/extensions/flatsome-cookie-notice/flatsome-cookie-notice.php:65
+msgctxt "cookie notice"
+msgid "Accept"
+msgstr "Прийняти"
+
+#: inc/extensions/flatsome-live-search/flatsome-live-search.php:209
+msgid "No matches found"
+msgstr "Нічого не знайдено"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:87
+msgid "Swatch size"
+msgstr "Розмір свотча"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:90
+msgid "X Small"
+msgstr "Дуже маленький"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:91
+msgid "Small"
+msgstr "Маленький"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:92
+msgid "Medium"
+msgstr "Середній"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:93
+msgid "Large"
+msgstr "Великий"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:94
+msgid "X Large"
+msgstr "Дуже великий"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:96
+msgid "Determines the size of the swatches."
+msgstr "Визначає розмір свотчів."
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:100
+msgid "Swatch shape"
+msgstr "Форма свотча"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:103
+msgid "Square"
+msgstr "Квадратний"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:104
+msgid "Rounded"
+msgstr "Заокруглений"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:105
+msgid "Circle"
+msgstr "Коло"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:107
+msgid "Determines the shape of the swatches."
+msgstr "Визначає форму свотчів."
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:111
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:112
+msgid "Use variation images?"
+msgstr "Використовувати зображення варіацій?"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:113
+msgid "Enable this if you want swatches for this attribute to be auto filled with variation images."
+msgstr ""
+"Увімкніть, якщо хочете, щоб свотчі цього атрибута автоматично заповнювалися "
+"зображеннями варіацій."
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches-admin.php:353
+msgid "Value"
+msgstr "Значення"
+
+#. translators: %d: number of additional options
+#: inc/extensions/flatsome-swatches/includes/class-swatches-frontend.php:510
+#, php-format
+msgid "Show %d more option"
+msgid_plural "Show %d more options"
+msgstr[0] "Показати ще %d варіант"
+msgstr[1] "Показати ще %d варіанти"
+msgstr[2] "Показати ще %d варіантів"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches.php:51
+msgid "UX Color"
+msgstr "UX Колір"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches.php:52
+msgid "UX Image"
+msgstr "UX Зображення"
+
+#: inc/extensions/flatsome-swatches/includes/class-swatches.php:53
+msgid "UX Label"
+msgstr "UX Мітка"
+
+#: inc/extensions/flatsome-wc-quick-view/flatsome-quick-view.php:25
+msgid "Quick View"
+msgstr "Швидкий перегляд"
+
+#: inc/functions/function-custom-css.php:664
+#: inc/woocommerce/structure-wc-global.php:340
+#: inc/woocommerce/structure-wc-product-box.php:29
+msgid "New"
+msgstr "Новинка"
+
+#: inc/functions/function-custom-css.php:665
+msgid "Hot"
+msgstr "Гаряче"
+
+#: inc/functions/function-custom-css.php:666
+msgid "Sale"
+msgstr "Розпродаж"
+
+#: inc/functions/function-custom-css.php:667
+msgid "Popular"
+msgstr "Популярне"
+
+#. translators: %s: The label
+#: inc/functions/function-register.php:55
+#, php-format
+msgid "Follow on %s"
+msgstr "Слідкувати у %s"
+
+#: inc/functions/function-setup.php:114
+#: inc/functions/function-setup.php:252
+msgid "Main Menu"
+msgstr "Головне меню"
+
+#: inc/functions/function-setup.php:115
+msgid "Main Menu - Mobile"
+msgstr "Головне меню - мобайл"
+
+#: inc/functions/function-setup.php:116
+msgid "Secondary Menu"
+msgstr "Другорядне меню"
+
+#: inc/functions/function-setup.php:117
+msgid "Footer Menu"
+msgstr "Меню футера"
+
+#: inc/functions/function-setup.php:118
+msgid "Top Bar Menu"
+msgstr "Меню верхньої панелі"
+
+#: inc/functions/function-setup.php:119
+msgid "My Account Menu"
+msgstr "Меню Мій акаунт"
+
+#: inc/functions/function-setup.php:154
+msgid "Sidebar"
+msgstr "Сайдбар"
+
+#: inc/functions/function-setup.php:164
+msgid "Footer 1"
+msgstr "Футер 1"
+
+#: inc/functions/function-setup.php:174
+msgid "Footer 2"
+msgstr "Футер 2"
+
+#: inc/functions/function-setup.php:253
+#: inc/shortcodes/accordion.php:143
+#: woocommerce/single-product/tabs/accordian.php:33
+msgid "Toggle"
+msgstr "Перемикач"
+
+#: inc/functions/function-site-health.php:11
+msgid "Flatsome registration"
+msgstr "Реєстрація Flatsome"
+
+#: inc/functions/function-site-health.php:28
+msgid "Flatsome is registered"
+msgstr "Flatsome зареєстрована"
+
+#: inc/functions/function-site-health.php:34
+msgid "Register Flatsome to receive updates."
+msgstr "Зареєструйте Flatsome, щоб отримувати оновлення."
+
+#: inc/functions/function-site-health.php:40
+msgid "Flatsome is not registered"
+msgstr "Flatsome не зареєстрована"
+
+#: inc/functions/function-site-health.php:44
+msgid "Register now"
+msgstr "Зареєструвати зараз"
+
+#: inc/functions/function-site-health.php:48
+msgid "Flatsome was unable to receive the latest update"
+msgstr "Не вдалося отримати останнє оновлення Flatsome"
+
+#: inc/integrations/wc-yith-wishlist/yith-wishlist.php:73
+#: inc/integrations/wc-yith-wishlist/yith-wishlist.php:96
+#: template-parts/header/partials/element-wishlist-mobile.php:21
+#: template-parts/header/partials/element-wishlist-mobile.php:22
+#: template-parts/header/partials/element-wishlist.php:19
+#: template-parts/header/partials/element-wishlist.php:24
+#: template-parts/header/partials/element-wishlist.php:25
+msgid "Wishlist"
+msgstr "Улюблене"
+
+#. translators: %s: Comment count
+#: inc/shortcodes/blog_posts.php:318
+#, php-format
+msgid "%s Comment"
+msgid_plural "%s Comments"
+msgstr[0] "%s Коментар"
+msgstr[1] "%s Коментарі"
+msgstr[2] "%s Коментарів"
+
+#: inc/shortcodes/buttons.php:244
+#: inc/woocommerce/structure-wc-product-page.php:86
+msgid "Open video in lightbox"
+msgstr "Відкрити відео в лайтбоксі"
+
+#: inc/shortcodes/follow.php:131
+#: inc/shortcodes/follow.php:132
+msgid "Follow on Facebook"
+msgstr "Слідкувати у Facebook"
+
+#: inc/shortcodes/follow.php:145
+#: inc/shortcodes/follow.php:146
+#: inc/shortcodes/ux_instagram_feed.php:151
+msgid "Follow on Instagram"
+msgstr "Слідкувати у Instagram"
+
+#: inc/shortcodes/follow.php:159
+#: inc/shortcodes/follow.php:160
+msgid "Follow on TikTok"
+msgstr "Слідкувати у TikTok"
+
+#: inc/shortcodes/follow.php:176
+#: inc/shortcodes/follow.php:177
+msgid "Follow on SnapChat"
+msgstr "Слідкувати у SnapChat"
+
+#: inc/shortcodes/follow.php:183
+msgid "Point the SnapChat camera at this to add us to SnapChat."
+msgstr "Наведіть камеру SnapChat сюди, щоб додати нас у SnapChat."
+
+#: inc/shortcodes/follow.php:195
+#: inc/shortcodes/follow.php:196
+msgid "Follow on X"
+msgstr "Слідкувати у X"
+
+#: inc/shortcodes/follow.php:209
+#: inc/shortcodes/follow.php:210
+msgid "Follow on Twitter"
+msgstr "Слідкувати у Twitter"
+
+#: inc/shortcodes/follow.php:223
+#: inc/shortcodes/follow.php:224
+msgid "Follow on Threads"
+msgstr "Слідкувати у Threads"
+
+#: inc/shortcodes/follow.php:237
+#: inc/shortcodes/follow.php:238
+msgid "Send us an email"
+msgstr "Написати нам email"
+
+#: inc/shortcodes/follow.php:251
+#: inc/shortcodes/follow.php:252
+msgid "Call us"
+msgstr "Телефонуйте нам"
+
+#: inc/shortcodes/follow.php:265
+#: inc/shortcodes/follow.php:266
+msgid "Follow on Pinterest"
+msgstr "Слідкувати у Pinterest"
+
+#: inc/shortcodes/follow.php:279
+#: inc/shortcodes/follow.php:280
+msgid "Subscribe to RSS"
+msgstr "Підписатися на RSS"
+
+#: inc/shortcodes/follow.php:293
+#: inc/shortcodes/follow.php:294
+msgid "Follow on LinkedIn"
+msgstr "Слідкувати у LinkedIn"
+
+#: inc/shortcodes/follow.php:307
+#: inc/shortcodes/follow.php:308
+msgid "Follow on YouTube"
+msgstr "Слідкувати у YouTube"
+
+#: inc/shortcodes/follow.php:321
+#: inc/shortcodes/follow.php:322
+msgid "Flickr"
+msgstr "Flickr"
+
+#: inc/shortcodes/follow.php:335
+#: inc/shortcodes/follow.php:336
+msgid "Follow on 500px"
+msgstr "Слідкувати у 500px"
+
+#: inc/shortcodes/follow.php:349
+#: inc/shortcodes/follow.php:350
+msgid "Follow on VKontakte"
+msgstr "Слідкувати у VKontakte"
+
+#: inc/shortcodes/follow.php:363
+#: inc/shortcodes/follow.php:364
+msgid "Follow on Telegram"
+msgstr "Слідкувати у Telegram"
+
+#: inc/shortcodes/follow.php:377
+#: inc/shortcodes/follow.php:378
+msgid "Follow on Twitch"
+msgstr "Слідкувати у Twitch"
+
+#: inc/shortcodes/follow.php:391
+#: inc/shortcodes/follow.php:392
+msgid "Follow on Discord"
+msgstr "Слідкувати у Discord"
+
+#: inc/shortcodes/portfolio.php:146
+#: woocommerce/product-searchform.php:39
+msgid "All"
+msgstr "Усі"
+
+#: inc/shortcodes/sections.php:154
+msgid "Scroll for more"
+msgstr "Прокрутіть нижче"
+
+#: inc/shortcodes/share.php:99
+#: inc/shortcodes/share.php:100
+#: woocommerce/share.php:74
+msgid "Share on WhatsApp"
+msgstr "Поділитися у WhatsApp"
+
+#: inc/shortcodes/share.php:114
+#: inc/shortcodes/share.php:115
+#: woocommerce/share.php:50
+msgid "Share on Facebook"
+msgstr "Поділитися у Facebook"
+
+#: inc/shortcodes/share.php:128
+#: inc/shortcodes/share.php:129
+msgid "Share on X"
+msgstr "Поділитися у X"
+
+#: inc/shortcodes/share.php:142
+#: inc/shortcodes/share.php:143
+#: woocommerce/share.php:56
+msgid "Share on Twitter"
+msgstr "Поділитися у Twitter"
+
+#: inc/shortcodes/share.php:158
+#: inc/shortcodes/share.php:159
+msgid "Share on Threads"
+msgstr "Поділитися у Threads"
+
+#. translators: %s: the share link.
+#: inc/shortcodes/share.php:170
+#, php-format
+msgid "Check this out: %s"
+msgstr "Раджу подивитися: %s"
+
+#: inc/shortcodes/share.php:174
+#: inc/shortcodes/share.php:175
+#: woocommerce/share.php:68
+msgid "Email to a Friend"
+msgstr "Надіслати другу по емейлу"
+
+#: inc/shortcodes/share.php:192
+#: inc/shortcodes/share.php:193
+#: woocommerce/share.php:62
+msgid "Pin on Pinterest"
+msgstr "Поділитися у Pinterest"
+
+#: inc/shortcodes/share.php:206
+#: inc/shortcodes/share.php:207
+msgid "Share on VKontakte"
+msgstr "Поділитися у VKontakte"
+
+#: inc/shortcodes/share.php:220
+#: inc/shortcodes/share.php:221
+msgid "Share on LinkedIn"
+msgstr "Поділитися у LinkedIn"
+
+#: inc/shortcodes/share.php:234
+#: inc/shortcodes/share.php:235
+msgid "Share on Tumblr"
+msgstr "Поділитися у Tumblr"
+
+#: inc/shortcodes/share.php:248
+#: inc/shortcodes/share.php:249
+msgid "Share on Telegram"
+msgstr "Поділитися у Telegram"
+
+#. translators: %d is the star rating from 1-5.
+#: inc/shortcodes/testimonials.php:47
+#, php-format
+msgid "Rated %d out of 5"
+msgstr "Оцінка %d з 5"
+
+#: inc/shortcodes/ux_instagram_feed.php:55
+msgid "Please select an Instagram account"
+msgstr "Будь ласка, оберіть акаунт Instagram"
+
+#: inc/shortcodes/ux_instagram_feed.php:130
+msgid "Instagram image"
+msgstr "Зображення Інстаграму"
+
+#: inc/shortcodes/ux_instagram_feed.php:235
+msgid "Unable to communicate with Instagram."
+msgstr "Не вдається з'єднатися з Instagram."
+
+#: inc/shortcodes/ux_instagram_feed.php:237
+msgid "An error occurred while retrieving media"
+msgstr "При отриманні медіа сталася помилка"
+
+#: inc/shortcodes/ux_payment_icons.php:26
+#: inc/shortcodes/ux_payment_icons.php:33
+msgid "Payment icons"
+msgstr "Іконки платіжних систем"
+
+#: inc/structure/structure-portfolio.php:50
+msgctxt "breadcrumb"
+msgid "Home"
+msgstr "Головна"
+
+#: inc/structure/structure-posts.php:139
+msgid "<span class=\"icon-angle-left\"></span> Older posts"
+msgstr "<span class=\"icon-angle-left\"></span> Старіші дописи"
+
+#: inc/structure/structure-posts.php:144
+msgid "Newer posts <span class=\"icon-angle-right\"></span>"
+msgstr "Новіші дописи <span class=\"icon-angle-right\"></span>"
+
+#: inc/structure/structure-posts.php:168
+msgid "Pingback:"
+msgstr "Пінгбек:"
+
+#: inc/structure/structure-posts.php:184
+#, php-format
+msgid "%s <span class=\"says\">says:</span>"
+msgstr "%s <span class=\"says\">каже:</span>"
+
+#: inc/structure/structure-posts.php:186
+msgid "Your comment is awaiting moderation."
+msgstr "Ваш коментар очікує модерація."
+
+#: inc/structure/structure-posts.php:195
+#, php-format
+msgctxt "1: date, 2: time"
+msgid "%1$s at %2$s"
+msgstr "%1$s в %2$s"
+
+#. translators: %1$s: post date, %2$s: post author
+#: inc/structure/structure-posts.php:236
+#, php-format
+msgctxt "post date by post author"
+msgid "<span class=\"posted-on\">Posted on %1$s</span> <span class=\"byline\">by %2$s</span>"
+msgstr ""
+"<span class=\"posted-on\">Опубліковано %1$s</span> <span "
+"class=\"byline\">автор: %2$s</span>"
+
+#: inc/widgets/widget-blocks.php:17
+msgid "Display a UX Block."
+msgstr "Показати UX-блок."
+
+#: inc/widgets/widget-blocks.php:21
+msgid "Flatsome UX Blocks"
+msgstr "UX-блоки"
+
+#: inc/widgets/widget-blocks.php:85
+#: inc/widgets/widget-recent-posts.php:130
+#: inc/widgets/widget-upsell.php:120
+msgid "Title"
+msgstr "Заголовок"
+
+#: inc/widgets/widget-recent-posts.php:18
+msgid "Display recent posts in Flatsome format."
+msgstr "Показати нещодавні дописи у форматі Flatsome."
+
+#: inc/widgets/widget-recent-posts.php:22
+msgid "Flatsome Recent Posts"
+msgstr "Недавні дописи Flatsome"
+
+#: inc/widgets/widget-recent-posts.php:49
+msgid "Recent Posts"
+msgstr "Недавні дописи"
+
+#: inc/widgets/widget-recent-posts.php:133
+msgid "Number of posts to show"
+msgstr "Скільки дописів показувати"
+
+#: inc/widgets/widget-recent-posts.php:137
+msgid "Show thumbnail"
+msgstr "Показувати мініатюру"
+
+#: inc/widgets/widget-recent-posts.php:140
+msgid "Show date stamp on thumbnail"
+msgstr "Показувати дату на мініатюрі"
+
+#: inc/widgets/widget-recent-posts.php:141
+msgid "* If the \"Show Thumbnail\" option is disabled or no featured image is set, the date stamp will be displayed."
+msgstr ""
+"* Якщо обрана опція \"Показати мініатюри\" вимкнена або немає основної фото "
+"в товару, буде відображено часову відмітку."
+
+#: inc/widgets/widget-upsell.php:20
+msgid "Add upsell products to product pages."
+msgstr "Додає допродажі (upsell) до сторінок товарів."
+
+#: inc/widgets/widget-upsell.php:48
+#: inc/widgets/widget-upsell.php:116
+msgid "Complete the look"
+msgstr "Завершіть вигляд"
+
+#: inc/woocommerce/class-buy-now.php:100
+msgid "Buy now"
+msgstr "Купити зараз"
+
+#: inc/woocommerce/class-mini-cart.php:168
+msgctxt "mini cart add to cart button label"
+msgid "Add"
+msgstr "Додати"
+
+#. translators: %s: The threshold
+#: inc/woocommerce/class-shipping.php:160
+#, php-format
+msgid "Add %s to cart and get free shipping!"
+msgstr "Додайте %s до кошика та отримайте безкоштовну доставку!"
+
+#: inc/woocommerce/class-shipping.php:171
+msgid "Your order qualifies for free shipping 🎉"
+msgstr "Ваше замовлення підходить для безкоштовної доставки 🎉"
+
+#: inc/woocommerce/structure-wc-category-page.php:97
+#: inc/woocommerce/structure-wc-product-page-fields.php:31
+msgid "Top Content"
+msgstr "Верхній контент"
+
+#: inc/woocommerce/structure-wc-category-page.php:102
+msgid "Enter a value for this field. Shortcodes are allowed. This will be displayed at top of the category."
+msgstr ""
+"Введіть значення для цього поля. Підтримуються шорткоди. Буде відображено "
+"вгорі сторінки категорії."
+
+#: inc/woocommerce/structure-wc-category-page.php:119
+#: inc/woocommerce/structure-wc-product-page-fields.php:38
+msgid "Bottom Content"
+msgstr "Нижній контент"
+
+#: inc/woocommerce/structure-wc-category-page.php:124
+msgid "Enter a value for this field. Shortcodes are allowed. This will be displayed at bottom of the category."
+msgstr ""
+"Введіть значення для цього поля. Підтримуються шорткоди. Буде відображено "
+"внизу сторінки категорії."
+
+#: inc/woocommerce/structure-wc-category-page.php:152
+msgid "Choose a custom product block layout for this category."
+msgstr "Виберіть власний вигляд блоку товару для цієї категорії."
+
+#: inc/woocommerce/structure-wc-checkout.php:173
+msgid "I have read and agree"
+msgstr "Я прочитав та погоджуюся"
+
+#: inc/woocommerce/structure-wc-global.php:99
+msgid "Shop Sidebar"
+msgstr "Бокова панель магазину"
+
+#: inc/woocommerce/structure-wc-global.php:108
+msgid "Product Sidebar"
+msgstr "Бокова панель товару"
+
+#: inc/woocommerce/structure-wc-global.php:271
+msgid "Posts found"
+msgstr "Знайдено дописи"
+
+#: inc/woocommerce/structure-wc-global.php:284
+msgid "Pages found"
+msgstr "Знайдені сторінки"
+
+#. translators: %s: Product title
+#: inc/woocommerce/structure-wc-product-box.php:70
+#, php-format
+msgid "Alternative view of %s"
+msgstr "Альтернативний вигляд %s"
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:17
+msgid "Product layout"
+msgstr "Розміщення товару"
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:24
+msgid "Choose a custom product block layout for this product."
+msgstr "Виберіть власний вигляд блоку товару для цього товару."
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:33
+msgid "Enter content that will show after the header and before the product. Shortcodes are allowed"
+msgstr ""
+"Введіть вміст, який відображатиметься після хедеру та перед товаром. "
+"Підтримуються шорткоди"
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:40
+msgid "Enter content that will show after the product info. Shortcodes are allowed"
+msgstr ""
+"Введіть вміст, який буде показано після інформації про товар. Підтримуються "
+"шорткоди"
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:46
+msgid "Extra"
+msgstr "Додатково"
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:52
+msgid "Enable a custom bubble on this product."
+msgstr "Увімкнути власний бейдж для цього товару."
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:82
+msgid "Custom Tab Content"
+msgstr "Власний вміст вкладок"
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:84
+msgid "Enter content for custom product tab here. Shortcodes are allowed"
+msgstr "Введіть вміст для власної вкладки товару. Підтримуються шорткоди"
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:93
+msgid "Product Video"
+msgstr "Відео товару"
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:95
+msgid "Enter your product video URL here. Accepts YouTube, Vimeo, MP4 or WEBM links. YouTube upload recommended for best performance."
+msgstr ""
+"Введіть URL відео товару. Підтримуються посилання на YouTube, Vimeo, MP4 або "
+"WEBM. Для кращої продуктивності рекомендуємо завантажувати на YouTube."
+
+#: inc/woocommerce/structure-wc-product-page-fields.php:110
+msgid "Select where you want to display product video."
+msgstr "Виберіть, де відображати відео товару."
+
+#: inc/woocommerce/structure-wc-product-page-header.php:106
+msgid "Next product"
+msgstr "Наступний товар"
+
+#: inc/woocommerce/structure-wc-product-page-header.php:124
+msgid "Previous product"
+msgstr "Попередній товар"
+
+#: inc/woocommerce/structure-wc-product-page.php:85
+#: inc/woocommerce/structure-wc-product-page.php:166
+msgid "Video"
+msgstr "Відео"
+
+#: inc/woocommerce/structure-wc-product-page.php:129
+#: inc/woocommerce/structure-wc-product-page.php:130
+msgid "Zoom"
+msgstr "Масштабування"
+
+#: inc/woocommerce/structure-wc-product-page.php:333
+msgid "Select options"
+msgstr "Обрати опції"
+
+#. Template Name of the theme
+msgid "Page - Full Width - Parallax Title"
+msgstr "Сторінка — На всю ширину — Заголовок з паралаксом"
+
+#. Template Name of the theme
+msgid "Page - No Header / No Footer"
+msgstr "Сторінка — Без шапки / без футера"
+
+#. Template Name of the theme
+msgid "Page - Vertical Sub-Nav"
+msgstr "Сторінка — Вертикальна піднавігація"
+
+#. Template Name of the theme
+msgid "Page - Container - Center Title"
+msgstr "Сторінка — Контейнер — Заголовок по центру"
+
+#. Template Name of the theme
+msgid "Page - Full Width"
+msgstr "Сторінка — На всю ширину"
+
+#. Template Name of the theme
+msgid "WooCommerce - Cart"
+msgstr "WooCommerce — Кошик"
+
+#. Template Name of the theme
+msgid "WooCommerce - Checkout"
+msgstr "WooCommerce — Оформлення замовлення"
+
+#. Template Name of the theme
+msgid "Portfolio"
+msgstr "Портфоліо"
+
+#. Template Name of the theme
+msgid "Page - Full Width - Header on Scroll"
+msgstr "Сторінка — На всю ширину — Шапка при прокрутці"
+
+#. Template Name of the theme
+msgid "Page - Left Sidebar"
+msgstr "Сторінка — Сайдбар ліворуч"
+
+#. Template Name of the theme
+msgid "WooCommerce - My Account"
+msgstr "WooCommerce — Мій акаунт"
+
+#. Template Name of the theme
+msgid "Page - Right Sidebar"
+msgstr "Сторінка — Сайдбар праворуч"
+
+#. Template Name of the theme
+msgid "Page - Single Page Nav - Transparent Header - Light Text"
+msgstr ""
+"Сторінка — Навігація односторінкового сайту — Прозора шапка — Світлий текст"
+
+#. Template Name of the theme
+msgid "Page - Single Page Nav - Transparent Header"
+msgstr "Сторінка — Навігація односторінкового сайту — Прозора шапка"
+
+#. Template Name of the theme
+msgid "Page - Single Page Nav"
+msgstr "Сторінка — Навігація односторінкового сайту"
+
+#. Template Name of the theme
+msgid "Page - Full Width - Transparent Header - Light Text"
+msgstr "Сторінка — На всю ширину — Прозора шапка — Світлий текст"
+
+#. Template Name of the theme
+msgid "Page - Full Width - Transparent Header"
+msgstr "Сторінка — На всю ширину — Прозора шапка"
+
+#: searchform.php:18
+#: woocommerce/product-searchform.php:65
+msgid "Submit"
+msgstr "Надіслати"
+
+#. translators: 1. Template
+#: template-parts/admin/envato/directory-warning.php:13
+#, php-format
+msgid "An unusual theme directory name was detected: <em>%s</em>. The Flatsome parent theme should be installed in a directory named <em>flatsome</em> to ensure updates are handled correctly."
+msgstr ""
+"Виявлено незвичайну назву теки теми: <em>%s</em>. Батьківську тему Flatsome "
+"потрібно встановлювати в теку з назвою <em>flatsome</em>, щоб оновлення "
+"коректно працювали."
+
+#: template-parts/admin/envato/register-form.php:25
+msgid "Your site is <strong>registered</strong>. Thank you! Enjoy Flatsome and one-click updates."
+msgstr ""
+"Ваш сайт <strong>зареєстровано</strong>. Дякуємо! Користуйтеся Flatsome та "
+"оновленнями в один клік."
+
+#: template-parts/admin/envato/register-form.php:37
+msgid "Your copy of Flatsome appears to be registered using an unsupported or outdated method. Please re-register with a valid purchase code."
+msgstr ""
+"Схоже, що ваша копія Flatsome зареєстрована застарілим або непідтримуваним "
+"способом. Будь ласка, перереєструйтеся за допомогою дійсного коду покупки."
+
+#: template-parts/admin/envato/register-form.php:52
+msgid "Registered domain:"
+msgstr "Зареєстрований домен:"
+
+#: template-parts/admin/envato/register-form.php:109
+msgid "Are you sure you want to unregister Flatsome?"
+msgstr "Ви впевнені, що хочете відкликати реєстрацію Flatsome?"
+
+#. translators: 1: Version.
+#: template-parts/admin/envato/version-info-iframe.php:15
+#, php-format
+msgid "Version %s"
+msgstr "Версія %s"
+
+#: template-parts/admin/envato/version-info-iframe.php:18
+msgid "Read change log here"
+msgstr "Читати журнал змін"
+
+#: template-parts/footer/back-to-top.php:25
+msgid "Go to top"
+msgstr "Нагору"
+
+#: template-parts/header/partials/element-contact-mobile.php:16
+msgid "Contact information"
+msgstr "Контактна інформація"
+
+#: template-parts/header/partials/element-contact-mobile.php:49
+#: template-parts/header/partials/element-contact.php:32
+msgid "Location"
+msgstr "Розташування"
+
+#: template-parts/header/partials/element-contact-mobile.php:58
+#: template-parts/header/partials/element-contact.php:51
+msgid "Contact"
+msgstr "Контакт"
+
+#: template-parts/header/partials/element-contact-mobile.php:92
+#: template-parts/header/partials/element-contact.php:91
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+#: template-parts/header/partials/element-menu-icon.php:18
+#: template-parts/header/partials/element-menu-icon.php:28
+#: template-parts/overlays/overlay-menu.php:45
+msgid "Menu"
+msgstr "Меню"
+
+#: template-parts/header/partials/element-nav-vertical.php:47
+#: template-parts/overlays/overlay-menu.php:50
+msgid "Categories"
+msgstr "Категорії"
+
+#: template-parts/portfolio/portfolio-summary-full.php:31
+#: template-parts/portfolio/portfolio-summary.php:26
+msgid "Tags"
+msgstr "Теги"
+
+#: template-parts/posts/content-none.php:14
+msgid "Nothing Found"
+msgstr "Нічого не знайдено"
+
+#: template-parts/posts/content-none.php:20
+#, php-format
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+"Готові опублікувати свій перший допис? <a href=\"%1$s\">Почніть звідси</a>."
+
+#: template-parts/posts/content-none.php:24
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr ""
+"На жаль, нічого не знайдено за вашим запитом. Спробуйте інші ключові слова."
+
+#: template-parts/posts/content-none.php:29
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr ""
+"Здається, ми не знаходимо того, що ви шукаєте. Можливо, допоможе пошук."
+
+#. translators: used between list items, there is a space after the comma
+#: template-parts/posts/content-single.php:34
+#: template-parts/posts/content-single.php:37
+#: template-parts/posts/partials/entry-footer-single.php:14
+#: template-parts/posts/partials/entry-footer-single.php:22
+#: template-parts/posts/partials/entry-footer.php:14
+#: template-parts/posts/partials/entry-footer.php:22
+#: template-parts/posts/partials/entry-title.php:12
+#: template-parts/posts/partials/entry-title.php:17
+msgid ", "
+msgstr ", "
+
+#: template-parts/posts/content-single.php:42
+#, php-format
+msgid "This entry was posted in %1$s and tagged %2$s."
+msgstr "Ця стаття опублікована у категорії %1$s та містить теги %2$s."
+
+#: template-parts/posts/content-single.php:44
+#, php-format
+msgid "This entry was posted in %1$s. Bookmark the <a href=\"%3$s\" title=\"Permalink to %4$s\" rel=\"bookmark\">permalink</a>."
+msgstr ""
+"Цей запис опубліковано у %1$s. Додайте <a href=\"%3$s\" title=\"Постійне "
+"посилання на %4$s\" rel=\"bookmark\">постійне посилання</a> в закладки."
+
+#: template-parts/posts/content.php:15
+#: template-parts/posts/content.php:19
+#: template-parts/posts/featured-posts.php:29
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Продовжити читання <span class=\"meta-nav\">&rarr;</span>"
+
+#: template-parts/posts/loop/post-simple.php:28
+#, php-format
+msgid "%1$s Comment"
+msgid_plural "%1$s Comments"
+msgstr[0] "%1$s Коментар"
+msgstr[1] "%1$s Коментарі"
+msgstr[2] "%1$s Коментарів"
+
+#: template-parts/posts/partials/archive-title.php:17
+#, php-format
+msgid "Category Archives: %s"
+msgstr "Архіви категорій: %s"
+
+#: template-parts/posts/partials/archive-title.php:20
+#, php-format
+msgid "Tag Archives: %s"
+msgstr "Архіви тегу: %s"
+
+#: template-parts/posts/partials/archive-title.php:23
+#, php-format
+msgid "Search Results for: %s"
+msgstr "Результати пошуку для фрази: %s"
+
+#: template-parts/posts/partials/archive-title.php:30
+#, php-format
+msgid "Author Archives: %s"
+msgstr "Архіви авторів: %s"
+
+#: template-parts/posts/partials/archive-title.php:38
+#, php-format
+msgid "Daily Archives: %s"
+msgstr "Щоденні архіви: %s"
+
+#: template-parts/posts/partials/archive-title.php:41
+#, php-format
+msgid "Monthly Archives: %s"
+msgstr "Щомісячні архіви: %s"
+
+#: template-parts/posts/partials/archive-title.php:44
+#, php-format
+msgid "Yearly Archives: %s"
+msgstr "Річні архіви: %s"
+
+#: template-parts/posts/partials/archive-title.php:47
+msgid "Asides"
+msgstr "Замітки"
+
+#: template-parts/posts/partials/archive-title.php:50
+msgid "Images"
+msgstr "Зображення"
+
+#: template-parts/posts/partials/archive-title.php:53
+msgid "Videos"
+msgstr "Відео"
+
+#: template-parts/posts/partials/archive-title.php:56
+msgid "Quotes"
+msgstr "Цитати"
+
+#: template-parts/posts/partials/archive-title.php:59
+msgid "Links"
+msgstr "Посилання"
+
+#: template-parts/posts/partials/entry-footer-single.php:17
+#: template-parts/posts/partials/entry-footer.php:17
+#, php-format
+msgid "Posted in %1$s"
+msgstr "Опубліковано у %1$s"
+
+#: template-parts/posts/partials/entry-footer-single.php:27
+#: template-parts/posts/partials/entry-footer.php:27
+#, php-format
+msgid "Tagged %1$s"
+msgstr "Теги: %1$s"
+
+#: template-parts/posts/partials/entry-footer-single.php:33
+#: template-parts/posts/partials/entry-footer.php:33
+msgid "Leave a comment"
+msgstr "Коментувати"
+
+#: template-parts/posts/partials/entry-footer-single.php:33
+#: template-parts/posts/partials/entry-footer.php:33
+msgid "<strong>1</strong> Comment"
+msgstr "<strong>1</strong> Коментар"
+
+#: template-parts/posts/partials/entry-footer-single.php:33
+#: template-parts/posts/partials/entry-footer.php:33
+msgid "<strong>%</strong> Comments"
+msgstr "<strong>%</strong> Коментарів"
+
+#: woocommerce/checkout/header-small.php:42
+#: woocommerce/checkout/header.php:43
+msgid "Checkout steps"
+msgstr "Кроки оформлення замовлення"
+
+#: woocommerce/checkout/header-small.php:80
+#: woocommerce/checkout/header.php:83
+msgid "Shopping Cart"
+msgstr "Кошик"
+
+#: woocommerce/checkout/header-small.php:85
+#: woocommerce/checkout/header.php:88
+msgid "Checkout details"
+msgstr "Деталі замовлення"
+
+#: woocommerce/checkout/header-small.php:90
+#: woocommerce/checkout/header.php:93
+msgid "Order Complete"
+msgstr "Замовлення готове"
+
+#: woocommerce/checkout/social-login.php:17
+#: woocommerce/myaccount/header.php:71
+msgid "Login with <strong>Facebook</strong>"
+msgstr "Вхід / Реєстрація через <strong>Facebook</strong>"
+
+#: woocommerce/checkout/social-login.php:28
+#: woocommerce/myaccount/header.php:81
+msgid "Login with <strong>Google</strong>"
+msgstr "Вхід / Реєстрація через <strong>Google</strong>"
+
+#: woocommerce/global/quantity-input.php:31
+msgid "Decrease quantity"
+msgstr "Зменшити кількість"
+
+#: woocommerce/global/quantity-input.php:35
+msgid "Increase quantity"
+msgstr "Збільшити кількість"
+
+#: woocommerce/myaccount/form-login-lightbox-left-panel.php:78
+#: woocommerce/myaccount/form-login-lightbox-right-panel.php:120
+msgid "Don't have an account? Register one!"
+msgstr "Ще немаєте акаунту? Зареєструйтеся!"
+
+#: woocommerce/myaccount/form-login-lightbox-left-panel.php:79
+#: woocommerce/myaccount/form-login-lightbox-right-panel.php:121
+msgid "Register an Account"
+msgstr "Створити акаунт"
+
+#: inc/blocks/uxbuilder/block.json
+msgctxt "block title"
+msgid "UX Builder content"
+msgstr "Контент UX-білдер"
+
+#: inc/blocks/uxbuilder/block.json
+msgctxt "block description"
+msgid "This block contains content created with UX Builder."
+msgstr "Цей блок містить контент створений з допомогою UX Builder."
+
+#: theme.json
+msgctxt "Color name"
+msgid "Primary"
+msgstr "Основний"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Secondary"
+msgstr "Другорядний"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Success"
+msgstr "Успіх"
+
+#: theme.json
+msgctxt "Color name"
+msgid "Alert"
+msgstr "Увага"

@@ -1,0 +1,17 @@
+controller/images
+# Chrome temp profiles (TMPDIR setup in index.js) — never committed:
+# /updateserver and /devproductupdates run `git add .`
+.tmp
+# SQLite sidecar files. Only meaningful to the process that wrote them — pulling
+# a -wal/-shm next to a .db from a different moment is how the local replicas
+# got "database disk image is malformed". The server checkpoints before
+# committing, so the .db alone is always complete.
+databases/*.db-wal
+databases/*.db-shm
+# Append nested .git folders and node_modules to parent .gitignore
+
+
+node_modules/
+**/.git/
+dist/
+build/

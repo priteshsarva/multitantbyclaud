@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip -l server-products-4.0.1.zip)"
+    ]
+  }
+}
