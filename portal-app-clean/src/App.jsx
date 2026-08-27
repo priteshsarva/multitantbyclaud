@@ -19,6 +19,8 @@ import AdminClients from "./screens/AdminClients.jsx";
 import AdminEmailSettings from "./screens/AdminEmailSettings.jsx";
 import AdminPaymentSettings from "./screens/AdminPaymentSettings.jsx";
 import MyStorefronts from "./screens/MyStorefronts.jsx";
+import MyOrders from "./screens/MyOrders.jsx";
+import CatalogueSearch from "./screens/CatalogueSearch.jsx";
 import AdminHostedSites from "./screens/AdminHostedSites.jsx";
 import AdminOrders from "./screens/AdminOrders.jsx";
 
@@ -26,6 +28,7 @@ const clientNav = [
   ["dashboard", "Dashboard", LayoutDashboard],
   ["sites", "My sites", Globe],
   ["storefront", "My storefront", LayoutTemplate],
+  ["orders", "Orders", ClipboardList],
   ["request", "Request a site", PlusCircle],
   ["plugin", "Plugin setup", Plug],
   ["analytics", "Store analytics", BarChart3],
@@ -75,10 +78,11 @@ export default function App() {
         case "dashboard": return <Dashboard me={user} />;
         case "sites": return <MySites />;
         case "storefront": return <MyStorefronts />;
+        case "orders": return <MyOrders />;
         case "request": return <RequestSite />;
         case "plugin": return <PluginSetup />;
         case "analytics": return <Stub title="Store analytics" note="Needs the plugin page-view tracker + an analytics endpoint." />;
-        case "search": return <Stub title="Catalogue search" note="Needs a portal-side catalogue search endpoint." />;
+        case "search": return <CatalogueSearch />;
         case "promote": return <Stub title="Promote" note="Ad marketplace — not built yet." />;
         case "wholesale": return <Stub title="Sell wholesale" note="Phase 2 — wholesale listings." />;
         case "billing": return <Billing />;

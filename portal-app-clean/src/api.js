@@ -44,6 +44,7 @@ export const api = {
 
   // ---- admin: clients + settings ----
   adminUsers: (q) => req(`/portal/admin/users${q ? `?q=${encodeURIComponent(q)}` : ""}`),
+  adminSetUserPassword: (id, password) => req(`/portal/admin/users/${id}/set-password`, { method: "POST", body: password ? { password } : {} }),
   adminGetSmtp: () => req("/portal/admin/settings/smtp"),
   adminSaveSmtp: (cfg) => req("/portal/admin/settings/smtp", { method: "PUT", body: cfg }),
   adminTestSmtp: (to) => req("/portal/admin/settings/smtp/test", { method: "POST", body: { to } }),
@@ -104,6 +105,9 @@ export const api = {
 
   // ---- client: hosted storefronts ----
   myHostedSites: () => req("/portal/hosted-sites"),
+  hostedOrders: (params) => req(`/portal/hosted-orders${params ? `?${new URLSearchParams(params)}` : ""}`),
+  hostedAnalytics: () => req("/portal/hosted-analytics"),
+  catalogue: (params) => req(`/portal/catalogue${params ? `?${new URLSearchParams(params)}` : ""}`),
   createHostedSite: (store_name, slug) => req("/portal/hosted-sites", { method: "POST", body: { store_name, slug } }),
   hostedSiteSettings: (id) => req(`/portal/hosted-sites/${id}/settings`),
   saveHostedSiteSettings: (id, settings) => req(`/portal/hosted-sites/${id}/settings`, { method: "PUT", body: settings }),

@@ -221,6 +221,7 @@ function NavigationPanel({ siteId }) {
   const [brandsAvail, setBrandsAvail] = useState({}); // cat -> [{name,count}] | "loading"
   const [brandSel, setBrandSel] = useState({});   // "cat brand" -> { on_home, label, thumbnail } (presence = featured)
   const [openCat, setOpenCat] = useState(null);   // which category's brand list is expanded
+  const [hideUnmapped, setHideUnmapped] = useState(false); // hide un-mapped sub-categories from the menu
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
@@ -243,6 +244,7 @@ function NavigationPanel({ siteId }) {
         })));
         setBrandSel(Object.fromEntries((nav.brands || []).map((b) =>
           [bkey(b.category, b.brand), { category: b.category, brand: b.brand, on_home: b.on_home !== false, label: b.label || b.brand, thumbnail: b.thumbnail || "" }])));
+        setHideUnmapped(!!nav.hide_unmapped);
       })
       .catch(setError);
   }, [siteId]);
@@ -278,6 +280,7 @@ function NavigationPanel({ siteId }) {
         brands: Object.values(brandSel).map((v) => ({
           category: v.category, brand: v.brand, label: (v.label || v.brand).trim(), on_home: !!v.on_home, thumbnail: (v.thumbnail || "").trim(),
         })),
+        hide_unmapped: hideUnmapped,
       };
       await api.saveHostedSiteSettings(siteId, { nav });
       setSaved(true);
@@ -295,6 +298,10 @@ function NavigationPanel({ siteId }) {
         each with its own thumbnail. Leave everything unticked to show all your categories automatically, in default order.
       </div>
       <ErrorNote error={error} />
+      <label style={{ ...ckLbl, marginBottom: 12, background: "#f7f8fb", padding: "8px 10px", borderRadius: 8 }}>
+        <input type="checkbox" checked={hideUnmapped} onChange={(e) => { setSaved(false); setHideUnmapped(e.target.checked); }} />
+        Hide un-mapped sub-categories from the menu (show only the ones you renamed in your category map)
+      </label>
       {!order ? <Spinner msg="Loading categories…" /> : order.length === 0 ? (
         <Empty msg="No categories yet — add product sources above first." />
       ) : (
@@ -369,6 +376,16 @@ const ckLbl = { display: "flex", alignItems: "center", gap: 5, fontSize: 12, col
 const linkBtn = { background: "none", border: "none", color: "#3b6fd8", fontSize: 12, cursor: "pointer", padding: 0 };
 
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
+
+// Best achievable text contrast on a colour (using black OR white text), as a
+// WCAG contrast ratio. < 4.5 means even the better of black/white fails AA.
+function _rgb(hex) { let h = String(hex || "").replace("#", "").trim(); if (h.length === 3) h = h.split("").map((c) => c + c).join(""); if (!/^[0-9a-fA-F]{6}$/.test(h)) return null; return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); }
+function bestContrast(hex) {
+  const rgb = _rgb(hex); if (!rgb) return 21;
+  const [r, g, b] = rgb.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  const L = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return Math.max(1.05 / (L + 0.05), (L + 0.05) / 0.05); // vs white, vs black
+}
 
 function CustomDomainPanel({ site, onChanged }) {
   const [domain, setDomain] = useState(site.custom_domain || "");
@@ -456,15 +473,28 @@ function HomepagePresetPanel({ siteId }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.hostedSitePresets().then((r) => setPresets(r.presets || [])).catch(setError);
-  }, []);
+    // load the presets AND which one this site currently has applied, so the
+    // selection survives a page refresh (was resetting to none before).
+    Promise.all([api.hostedSitePresets(), api.hostedSiteSettings(siteId)])
+      .then(([pr, s]) => { setPresets(pr.presets || []); setApplied(s.settings?.preset || null); })
+      .catch(setError);
+  }, [siteId]);
 
   async function apply(id) {
-    setApplying(id); setApplied(null); setError(null);
-    try { await api.applyHostedSitePreset(siteId, id); setApplied(id); }
+    setApplying(id); setError(null);
+    try {
+      if (id === "original") await api.saveHostedSiteSettings(siteId, { sections: [], preset: "original" });
+      else await api.applyHostedSitePreset(siteId, id);
+      setApplied(id);
+    }
     catch (e) { setError(e); }
     finally { setApplying(null); }
   }
+
+  // "Original" (per-category best-sellers + all-products) is the classic home,
+  // rendered whenever there are no preset sections; the two shipped presets
+  // replace it with a fixed section layout.
+  const ORIGINAL = { id: "original", name: "Original (multi-category)", description: "Best-sellers rail per category + a mixed All-products rail. Shows every category you sell. Recommended.", section_count: "auto" };
 
   return (
     <Card>
@@ -476,16 +506,20 @@ function HomepagePresetPanel({ siteId }) {
       <ErrorNote error={error} />
       {!presets ? <Spinner msg="Loading presets…" /> : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
-          {presets.map((p) => (
-            <div key={p.id} style={{ border: applied === p.id ? "2px solid #C8FF3D" : "1px solid #e6e9f0", borderRadius: 10, padding: 14, background: "#fff" }}>
-              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{p.name}</div>
-              <div style={{ fontSize: 12, color: "#6b7688", marginBottom: 10, minHeight: 32 }}>{p.description}</div>
-              <div style={{ fontSize: 11, color: "#9aa3b2", marginBottom: 10 }}>{p.section_count} sections</div>
-              <Btn small tone={applied === p.id ? "lime" : "ghost"} disabled={applying === p.id} onClick={() => apply(p.id)}>
-                {applying === p.id ? "Applying…" : applied === p.id ? "Applied ✓" : "Use this layout"}
-              </Btn>
-            </div>
-          ))}
+          {[ORIGINAL, ...presets].map((p) => {
+            // the original layout is "applied" whenever no preset id is stored
+            const isOn = p.id === "original" ? (!applied || applied === "original") : applied === p.id;
+            return (
+              <div key={p.id} style={{ border: isOn ? "2px solid #C8FF3D" : "1px solid #e6e9f0", borderRadius: 10, padding: 14, background: "#fff" }}>
+                <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{p.name}</div>
+                <div style={{ fontSize: 12, color: "#6b7688", marginBottom: 10, minHeight: 32 }}>{p.description}</div>
+                <div style={{ fontSize: 11, color: "#9aa3b2", marginBottom: 10 }}>{p.section_count === "auto" ? "auto-built" : `${p.section_count} sections`}</div>
+                <Btn small tone={isOn ? "lime" : "ghost"} disabled={applying === p.id} onClick={() => apply(p.id)}>
+                  {applying === p.id ? "Applying…" : isOn ? "Applied ✓" : "Use this layout"}
+                </Btn>
+              </div>
+            );
+          })}
         </div>
       )}
     </Card>
@@ -520,7 +554,12 @@ function SettingsPanel({ siteId }) {
       phone: s.phone || "",
       announcement: s.announcement || "",
       about: s.about || "",
-      theme: { primary: (s.theme && s.theme.primary) || "#0E7A5F" },
+      theme: {
+        primary: (s.theme && s.theme.primary) || "#0E7A5F",
+        secondary: (s.theme && s.theme.secondary) || "#1a1512",
+        complementary: (s.theme && s.theme.complementary) || "#C8A24B",
+        background: (s.theme && s.theme.background) || "#ffffff",
+      },
       address: { line1: "", city: "", state: "", pincode: "", ...(s.address || {}) },
       social_urls: { instagram: "", facebook: "", youtube: "", community: "", ...(s.social_urls || {}) },
       hero: { title: "", subtitle: "", image_url: "", video_url: "", ...(s.hero || {}) },
@@ -586,9 +625,31 @@ function SettingsPanel({ siteId }) {
         <Field label="Store name"><input style={inputStyle} value={form.store_name} onChange={(e) => set("store_name", e.target.value)} /></Field>
         <Field label="Logo URL"><input style={inputStyle} value={form.logo_url} onChange={(e) => set("logo_url", e.target.value)} placeholder="https://…" /></Field>
         <Field label="WhatsApp number (checkout)"><input style={inputStyle} value={form.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} placeholder="+91 98765 43210" /></Field>
-        <Field label="Brand colour"><input type="color" style={{ ...inputStyle, padding: 4, height: 38 }} value={form.theme.primary} onChange={(e) => set("theme.primary", e.target.value)} /></Field>
         <Field label="Contact email"><input style={inputStyle} value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
         <Field label="Contact phone"><input style={inputStyle} value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 13, margin: "18px 0 6px" }}>Colour palette</div>
+      <div style={{ fontSize: 12, color: "#6b7688", marginBottom: 10 }}>
+        Four brand colours. Text on any coloured element is auto-set to black or white for readability.
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
+        {[["primary", "Primary"], ["secondary", "Secondary"], ["complementary", "Complementary"], ["background", "Background"]].map(([k, label]) => {
+          const lowContrast = bestContrast(form.theme[k]) < 4.5; // even black/white text can't hit WCAG AA
+          return (
+            <Field key={k} label={label}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <input type="color" style={{ width: 40, height: 38, padding: 2, border: "1px solid #d4d9e3", borderRadius: 6, cursor: "pointer" }} value={form.theme[k]} onChange={(e) => set(`theme.${k}`, e.target.value)} />
+                <input style={{ ...inputStyle, flex: 1 }} value={form.theme[k]} onChange={(e) => set(`theme.${k}`, e.target.value)} />
+              </div>
+              {lowContrast && (
+                <div style={{ fontSize: 11, color: "#b26a00", marginTop: 4, lineHeight: 1.3 }}>
+                  ⚠ Text may be hard to read on this colour — pick a darker or lighter shade.
+                </div>
+              )}
+            </Field>
+          );
+        })}
       </div>
 
       <div style={{ fontWeight: 700, fontSize: 13, margin: "18px 0 10px" }}>Address</div>
@@ -731,7 +792,12 @@ function OrdersPanel({ siteId }) {
                       <div style={{ margin: "12px 0", display: "flex", flexDirection: "column", gap: 6 }}>
                         {detail[o.id].items.map((it) => (
                           <div key={it.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: "#42505f" }}>
-                            <span>{it.product_name}{it.size ? ` (Size ${it.size})` : ""} × {it.qty}</span>
+                            <span>
+                              {it.page_url
+                                ? <a href={it.page_url} target="_blank" rel="noreferrer" style={{ color: "#3b6fd8", textDecoration: "none" }}>{it.product_name}</a>
+                                : it.product_name}
+                              {it.size ? ` (Size ${it.size})` : ""} × {it.qty}
+                            </span>
                             <span>₹{Number(it.line_total).toLocaleString("en-IN")}</span>
                           </div>
                         ))}
