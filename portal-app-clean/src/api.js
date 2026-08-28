@@ -83,6 +83,8 @@ export const api = {
     req(`/portal/admin/sources/${id}/categories`, { method: "PATCH", body: { cat_name, enabled } }),
   adminRefreshCategories: (id, mode) =>
     req(`/portal/admin/sources/${id}/categories/refresh`, { method: "POST", body: { mode } }),
+  adminRefreshAllCategories: () =>
+    req("/portal/admin/sources/categories/refresh-all", { method: "POST" }),
   adminSetSourceStatus: (id, status) =>
     req(`/portal/admin/sources/${id}`, { method: "PATCH", body: { status } }),
 
