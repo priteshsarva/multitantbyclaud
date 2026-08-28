@@ -110,6 +110,7 @@ export const api = {
   hostedOrders: (params) => req(`/portal/hosted-orders${params ? `?${new URLSearchParams(params)}` : ""}`),
   hostedAnalytics: () => req("/portal/hosted-analytics"),
   catalogue: (params) => req(`/portal/catalogue${params ? `?${new URLSearchParams(params)}` : ""}`),
+  notifications: () => req("/portal/notifications"),
   createHostedSite: (store_name, slug) => req("/portal/hosted-sites", { method: "POST", body: { store_name, slug } }),
   hostedSiteSettings: (id) => req(`/portal/hosted-sites/${id}/settings`),
   saveHostedSiteSettings: (id, settings) => req(`/portal/hosted-sites/${id}/settings`, { method: "PUT", body: settings }),
