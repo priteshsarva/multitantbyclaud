@@ -22,6 +22,7 @@ import MyStorefronts from "./screens/MyStorefronts.jsx";
 import MyOrders from "./screens/MyOrders.jsx";
 import CatalogueSearch from "./screens/CatalogueSearch.jsx";
 import Notifications, { lastSeen } from "./screens/Notifications.jsx";
+import BrandMapping from "./screens/BrandMapping.jsx";
 import AdminHostedSites from "./screens/AdminHostedSites.jsx";
 import AdminOrders from "./screens/AdminOrders.jsx";
 
@@ -43,6 +44,7 @@ const adminNav = [
   ["queue", "Approval queue", Inbox],
   ["sources", "Sources", Database],
   ["enrollAdmin", "Enrollments", ShieldCheck],
+  ["brandMap", "Brand mapping", Tags],
   ["hostedSites", "Storefronts", LayoutTemplate],
   ["hostedOrders", "Storefront orders", ClipboardList],
   ["users", "Clients", Users],
@@ -108,6 +110,7 @@ export default function App() {
       case "queue": return <AdminQueue />;
       case "sources": return <AdminSources />;
       case "enrollAdmin": return <AdminEnrollments />;
+      case "brandMap": return <BrandMapping />;
       case "hostedSites": return <AdminHostedSites />;
       case "hostedOrders": return <AdminOrders />;
       case "users": return <AdminClients />;

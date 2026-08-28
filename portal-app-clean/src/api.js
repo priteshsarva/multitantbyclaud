@@ -45,6 +45,10 @@ export const api = {
   // ---- admin: clients + settings ----
   adminUsers: (q) => req(`/portal/admin/users${q ? `?q=${encodeURIComponent(q)}` : ""}`),
   adminSetUserPassword: (id, password) => req(`/portal/admin/users/${id}/set-password`, { method: "POST", body: password ? { password } : {} }),
+  adminBrandMap: () => req("/portal/admin/brand-map"),
+  adminSaveBrandMap: (raw, canonical) => req("/portal/admin/brand-map", { method: "PUT", body: { raw, canonical } }),
+  adminDeleteBrandMap: (raw) => req(`/portal/admin/brand-map/${encodeURIComponent(raw)}`, { method: "DELETE" }),
+  adminBrands: (q) => req(`/portal/admin/brands${q ? `?q=${encodeURIComponent(q)}` : ""}`),
   adminGetSmtp: () => req("/portal/admin/settings/smtp"),
   adminSaveSmtp: (cfg) => req("/portal/admin/settings/smtp", { method: "PUT", body: cfg }),
   adminTestSmtp: (to) => req("/portal/admin/settings/smtp/test", { method: "POST", body: { to } }),
