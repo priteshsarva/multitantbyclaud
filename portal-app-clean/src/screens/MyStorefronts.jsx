@@ -101,6 +101,11 @@ function CreateSiteModal({ onClose, onDone }) {
 
 function StoreDetail({ site, onBack, onChanged }) {
   const [srcVer, setSrcVer] = useState(0); // bumped on source change → NavigationPanel refetches its category list
+  // New/not-yet-live stores get the step-by-step guided setup; once active the
+  // full single-page editor (what we had) is the default. Toggle either way.
+  const [mode, setMode] = useState(site.status === "active" ? "edit" : "wizard");
+  const bumpSrc = () => setSrcVer((v) => v + 1);
+
   return (
     <div>
       <button onClick={onBack} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "#6b7688", fontSize: 13, padding: 0, marginBottom: 14 }}>
@@ -117,29 +122,159 @@ function StoreDetail({ site, onBack, onChanged }) {
             </a>
           </div>
         </div>
+        <Btn tone="ghost" small onClick={() => setMode((m) => (m === "wizard" ? "edit" : "wizard"))}>
+          {mode === "wizard" ? "Edit all settings" : "Guided setup"}
+        </Btn>
       </div>
 
-      {site.status !== "active" && (
+      {site.status === "paused" && (
+        <Card style={{ marginBottom: 18, background: "#fdecef", border: "1px solid #f3c2cc" }}>
+          <div style={{ fontSize: 13, color: "#a23a4b" }}>
+            This storefront is <strong>paused</strong> — buyers can't reach it. It paused because the renewal wasn't paid within the 5-day grace after expiry. Renew from the <strong>Payment</strong> step to bring it back online.
+          </div>
+        </Card>
+      )}
+      {site.status !== "active" && site.status !== "paused" && (
         <Card style={{ marginBottom: 18, background: "#fff7e6", border: "1px solid #f0d9a8" }}>
           <div style={{ fontSize: 13, color: "#8a6d2f" }}>
-            This storefront is <strong>{site.status}</strong> — it isn't reachable by buyers until an admin approves and activates it.
-            You can still set up branding and products now, so it's ready the moment it goes live.
+            This storefront is <strong>{site.status}</strong> — it goes live once an admin approves it and the first payment is made.
+            Set up branding and products now so it's ready the moment you pay.
           </div>
         </Card>
       )}
 
-      <ProductsPanel siteId={site.id} onChanged={() => setSrcVer((v) => v + 1)} />
-      <div style={{ height: 18 }} />
-      <NavigationPanel key={srcVer} siteId={site.id} />
-      <div style={{ height: 18 }} />
-      <HomepagePresetPanel siteId={site.id} />
-      <div style={{ height: 18 }} />
-      <CustomDomainPanel site={site} onChanged={onChanged} />
-      <div style={{ height: 18 }} />
-      <SettingsPanel siteId={site.id} />
-      <div style={{ height: 18 }} />
-      <OrdersPanel siteId={site.id} />
+      {mode === "wizard" ? (
+        <StoreSetupWizard site={site} srcVer={srcVer} bumpSrc={bumpSrc} onChanged={onChanged} />
+      ) : (
+        <>
+          <ProductsPanel siteId={site.id} onChanged={bumpSrc} />
+          <div style={{ height: 18 }} />
+          <NavigationPanel key={srcVer} siteId={site.id} />
+          <div style={{ height: 18 }} />
+          <HomepagePresetPanel siteId={site.id} />
+          <div style={{ height: 18 }} />
+          <CustomDomainPanel site={site} onChanged={onChanged} />
+          <div style={{ height: 18 }} />
+          <SettingsPanel siteId={site.id} />
+          <div style={{ height: 18 }} />
+          <PaymentPanel site={site} />
+          <div style={{ height: 18 }} />
+          <OrdersPanel siteId={site.id} />
+        </>
+      )}
     </div>
+  );
+}
+
+// Step-by-step guided setup. Required steps (branding, products) can't be
+// skipped; optional ones can. Payment is last and skippable — but the store only
+// goes live once it's paid.
+function StoreSetupWizard({ site, srcVer, bumpSrc, onChanged }) {
+  const steps = [
+    { key: "branding", title: "Branding", required: true, hint: "Name, logo, colours, contact — the essentials.", render: () => <SettingsPanel siteId={site.id} /> },
+    { key: "products", title: "Products", required: true, hint: "Pick which sources feed your storefront.", render: () => <ProductsPanel siteId={site.id} onChanged={bumpSrc} /> },
+    { key: "navigation", title: "Navigation & front page", required: false, hint: "Optional — curate your menu and home page.", render: () => <NavigationPanel key={srcVer} siteId={site.id} /> },
+    { key: "homepage", title: "Homepage layout", required: false, hint: "Optional — pick a ready-made layout.", render: () => <HomepagePresetPanel siteId={site.id} /> },
+    { key: "domain", title: "Custom domain", required: false, hint: "Optional — use your own domain.", render: () => <CustomDomainPanel site={site} onChanged={onChanged} /> },
+    { key: "payment", title: "Payment & go live", required: false, hint: "Skippable — but the store only goes live once paid.", render: () => <PaymentPanel site={site} /> },
+  ];
+  const [i, setI] = useState(0);
+  const step = steps[i];
+  const last = i === steps.length - 1;
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 20, alignItems: "start" }}>
+      {/* step rail */}
+      <Card style={{ position: "sticky", top: 16 }}>
+        <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>Setup steps</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {steps.map((s, j) => (
+            <button key={s.key} onClick={() => setI(j)}
+              style={{ display: "flex", alignItems: "center", gap: 9, textAlign: "left", border: "none", cursor: "pointer",
+                background: j === i ? "#eef6ff" : "transparent", borderRadius: 8, padding: "8px 10px", fontSize: 12.5,
+                color: j === i ? "#1b2230" : "#42505f", fontWeight: j === i ? 700 : 500 }}>
+              <span style={{ width: 20, height: 20, borderRadius: 999, display: "grid", placeItems: "center", fontSize: 11,
+                background: j < i ? "#C8FF3D" : j === i ? "#1b2230" : "#e6e9f0", color: j === i ? "#fff" : "#1b2230" }}>
+                {j < i ? "✓" : j + 1}
+              </span>
+              <span style={{ flex: 1 }}>{s.title}</span>
+              {!s.required && <span style={{ fontSize: 10, color: "#9aa3b2" }}>optional</span>}
+            </button>
+          ))}
+        </div>
+      </Card>
+
+      {/* current step */}
+      <div>
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1b2230" }}>{step.title}</h2>
+            <Badge status={step.required ? "required" : "optional"} />
+          </div>
+          <div style={{ fontSize: 12.5, color: "#6b7688", marginTop: 4 }}>{step.hint}</div>
+        </div>
+
+        {step.render()}
+
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18 }}>
+          <Btn tone="ghost" disabled={i === 0} onClick={() => setI((n) => Math.max(0, n - 1))}>← Back</Btn>
+          <div style={{ flex: 1 }} />
+          {!step.required && !last && <Btn tone="ghost" onClick={() => setI((n) => n + 1)}>Skip</Btn>}
+          {!last && <Btn tone="lime" onClick={() => setI((n) => n + 1)}>Save &amp; continue →</Btn>}
+          {last && <Btn tone="lime" onClick={onChanged}>Done</Btn>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Payment step: shows the store's latest invoice and a Pay button. Paying
+// activates the store (and renews it when it's expired/paused).
+function PaymentPanel({ site }) {
+  const [invoices, setInvoices] = useState(null);
+  const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    api.invoices().then((r) => setInvoices((r.invoices || []).filter((iv) => iv.enrollment_id === site.id))).catch(setError);
+  }, [site.id]);
+
+  async function pay(id) {
+    setBusy(true); setError(null);
+    try { const r = await api.payInvoice(id); if (r.payment_url) window.location.href = r.payment_url; else setError(new Error("No payment URL returned.")); }
+    catch (e) { setError(e); setBusy(false); }
+  }
+
+  const unpaid = (invoices || []).find((iv) => iv.status !== "paid");
+
+  return (
+    <Card>
+      <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>Payment &amp; go live</div>
+      <div style={{ fontSize: 12.5, color: "#6b7688", marginBottom: 12 }}>
+        Your storefront goes live once payment is made. It stays active for a month; near expiry you'll be reminded, with a 5-day grace before it pauses.
+      </div>
+      <ErrorNote error={error} />
+      {site.status === "active" && (
+        <div style={{ fontSize: 13, color: "#2e7d32", marginBottom: 10 }}>
+          ✓ This storefront is <strong>live</strong>{site.expiry_date ? ` — renews on ${fmtDate(site.expiry_date)}` : ""}.
+        </div>
+      )}
+      {!invoices ? <Spinner /> : unpaid ? (
+        <div style={{ border: "1px solid #eef1f6", borderRadius: 10, padding: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>{unpaid.invoice_no} · ₹{Number(unpaid.amount).toLocaleString("en-IN")}</div>
+            <div style={{ fontSize: 12, color: "#6b7688", marginTop: 2 }}>{unpaid.status}{unpaid.due_date ? ` · due ${fmtDate(unpaid.due_date)}` : ""}</div>
+          </div>
+          <Btn tone="lime" disabled={busy} onClick={() => pay(unpaid.id)}>{busy ? "Redirecting…" : "Pay now"}</Btn>
+        </div>
+      ) : invoices.length === 0 ? (
+        <div style={{ fontSize: 13, color: "#8a6d2f" }}>
+          No invoice yet — your store is awaiting admin approval. An invoice appears here the moment it's approved; pay it to go live.
+        </div>
+      ) : (
+        <div style={{ fontSize: 13, color: "#2e7d32" }}>✓ All invoices paid.</div>
+      )}
+    </Card>
   );
 }
 
@@ -221,7 +356,6 @@ function NavigationPanel({ siteId }) {
   const [brandsAvail, setBrandsAvail] = useState({}); // cat -> [{name,count}] | "loading"
   const [brandSel, setBrandSel] = useState({});   // "cat brand" -> { on_home, label, thumbnail } (presence = featured)
   const [openCat, setOpenCat] = useState(null);   // which category's brand list is expanded
-  const [hideUnmapped, setHideUnmapped] = useState(false); // hide un-mapped sub-categories from the menu
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
@@ -244,7 +378,6 @@ function NavigationPanel({ siteId }) {
         })));
         setBrandSel(Object.fromEntries((nav.brands || []).map((b) =>
           [bkey(b.category, b.brand), { category: b.category, brand: b.brand, on_home: b.on_home !== false, label: b.label || b.brand, thumbnail: b.thumbnail || "" }])));
-        setHideUnmapped(!!nav.hide_unmapped);
       })
       .catch(setError);
   }, [siteId]);
@@ -280,7 +413,6 @@ function NavigationPanel({ siteId }) {
         brands: Object.values(brandSel).map((v) => ({
           category: v.category, brand: v.brand, label: (v.label || v.brand).trim(), on_home: !!v.on_home, thumbnail: (v.thumbnail || "").trim(),
         })),
-        hide_unmapped: hideUnmapped,
       };
       await api.saveHostedSiteSettings(siteId, { nav });
       setSaved(true);
@@ -298,10 +430,6 @@ function NavigationPanel({ siteId }) {
         each with its own thumbnail. Leave everything unticked to show all your categories automatically, in default order.
       </div>
       <ErrorNote error={error} />
-      <label style={{ ...ckLbl, marginBottom: 12, background: "#f7f8fb", padding: "8px 10px", borderRadius: 8 }}>
-        <input type="checkbox" checked={hideUnmapped} onChange={(e) => { setSaved(false); setHideUnmapped(e.target.checked); }} />
-        Hide un-mapped sub-categories from the menu (show only the ones you renamed in your category map)
-      </label>
       {!order ? <Spinner msg="Loading categories…" /> : order.length === 0 ? (
         <Empty msg="No categories yet — add product sources above first." />
       ) : (
