@@ -618,7 +618,9 @@ function HomepagePresetPanel({ siteId }) {
   async function apply(id) {
     setApplying(id); setError(null);
     try {
-      if (id === "original") await api.saveHostedSiteSettings(siteId, { sections: [], preset: "original" });
+      // component templates are hand-built pages selected by preset id (no section
+      // list); the rest are section-preset layouts built server-side.
+      if (COMPONENT_TEMPLATES.some((t) => t.id === id)) await api.saveHostedSiteSettings(siteId, { sections: [], preset: id });
       else await api.applyHostedSitePreset(siteId, id);
       setApplied(id);
     }
@@ -626,10 +628,13 @@ function HomepagePresetPanel({ siteId }) {
     finally { setApplying(null); }
   }
 
-  // "Original" (per-category best-sellers + all-products) is the classic home,
-  // rendered whenever there are no preset sections; the two shipped presets
-  // replace it with a fixed section layout.
-  const ORIGINAL = { id: "original", name: "Original (multi-category)", description: "Best-sellers rail per category + a mixed All-products rail. Shows every category you sell. Recommended.", section_count: "auto" };
+  // Hand-built full-page templates (rendered by their own component, not the
+  // section builder). "original" is the classic multi-category home; "velocity"
+  // is the shoe-first athletic template.
+  const COMPONENT_TEMPLATES = [
+    { id: "original", name: "Original (multi-category)", description: "Best-sellers rail per category + a mixed All-products rail. Shows every category you sell. Recommended.", section_count: "auto" },
+    { id: "velocity", name: "Velocity (athletic / shoes)", description: "High-energy neon + crimson, floating shoe shots, men's/women's selector, tech breakdown. Built shoes-first — best for footwear stores.", section_count: "auto" },
+  ];
 
   return (
     <Card>
@@ -641,7 +646,7 @@ function HomepagePresetPanel({ siteId }) {
       <ErrorNote error={error} />
       {!presets ? <Spinner msg="Loading presets…" /> : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
-          {[ORIGINAL, ...presets].map((p) => {
+          {[...COMPONENT_TEMPLATES, ...presets].map((p) => {
             // the original layout is "applied" whenever no preset id is stored
             const isOn = p.id === "original" ? (!applied || applied === "original") : applied === p.id;
             return (
