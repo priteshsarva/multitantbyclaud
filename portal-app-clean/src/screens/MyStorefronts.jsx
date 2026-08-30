@@ -356,6 +356,7 @@ function NavigationPanel({ siteId }) {
   const [brandsAvail, setBrandsAvail] = useState({}); // cat -> [{name,count}] | "loading"
   const [brandSel, setBrandSel] = useState({});   // "cat brand" -> { on_home, label, thumbnail } (presence = featured)
   const [openCat, setOpenCat] = useState(null);   // which category's brand list is expanded
+  const [hideUnmapped, setHideUnmapped] = useState(false); // hide sub-categories not renamed in your map
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
@@ -378,6 +379,7 @@ function NavigationPanel({ siteId }) {
         })));
         setBrandSel(Object.fromEntries((nav.brands || []).map((b) =>
           [bkey(b.category, b.brand), { category: b.category, brand: b.brand, on_home: b.on_home !== false, label: b.label || b.brand, thumbnail: b.thumbnail || "" }])));
+        setHideUnmapped(!!nav.hide_unmapped);
       })
       .catch(setError);
   }, [siteId]);
@@ -413,6 +415,7 @@ function NavigationPanel({ siteId }) {
         brands: Object.values(brandSel).map((v) => ({
           category: v.category, brand: v.brand, label: (v.label || v.brand).trim(), on_home: !!v.on_home, thumbnail: (v.thumbnail || "").trim(),
         })),
+        hide_unmapped: hideUnmapped,
       };
       await api.saveHostedSiteSettings(siteId, { nav });
       setSaved(true);
@@ -489,7 +492,11 @@ function NavigationPanel({ siteId }) {
               </div>
             );
           })}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
+          <label style={{ ...ckLbl, marginTop: 10, fontSize: 12.5 }}>
+            <input type="checkbox" checked={hideUnmapped} onChange={(e) => { setSaved(false); setHideUnmapped(e.target.checked); }} />
+            Hide un-mapped sub-categories from the menu (show only the ones you renamed in your category map)
+          </label>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
             <Btn tone="lime" onClick={save} disabled={busy}>{busy ? "Saving…" : "Save navigation"}</Btn>
             {saved && <span style={{ fontSize: 12.5, color: "#2e7d32" }}>Saved ✓</span>}
           </div>
@@ -694,6 +701,7 @@ function SettingsPanel({ siteId }) {
       policies: { shipping: "", returns: "", privacy: "", terms: "", ...(s.policies || {}) },
       pricing: { bands, using_default: bandsFromServer.length === 0 },
       analytics: { ga4_id: "", meta_pixel_id: "", ...(s.analytics || {}) },
+      reviews: Array.isArray(s.reviews) ? s.reviews : [],
     };
   }
 
@@ -719,6 +727,7 @@ function SettingsPanel({ siteId }) {
       // vendor's edited bands.
       const payload = {
         ...form,
+        reviews: (form.reviews || []).map((s) => String(s).trim()).filter(Boolean),
         pricing: form.pricing.using_default ? {} : { bands: form.pricing.bands.map((b) => ({
           min: Number(b.min) || 0,
           max: b.max === null || b.max === "" || b.max === undefined ? null : Number(b.max),
@@ -805,11 +814,20 @@ function SettingsPanel({ siteId }) {
         <Field label="Hero title"><input style={inputStyle} value={form.hero.title} onChange={(e) => set("hero.title", e.target.value)} /></Field>
         <Field label="Hero image URL"><input style={inputStyle} value={form.hero.image_url} onChange={(e) => set("hero.image_url", e.target.value)} placeholder="https://…" /></Field>
       </div>
-      <Field label="Hero video URL (.mp4 — takes priority over the image, like the original site)">
-        <input style={inputStyle} value={form.hero.video_url} onChange={(e) => set("hero.video_url", e.target.value)} placeholder="https://…/banner.mp4" />
+      <Field label="Hero video URL — .mp4/.webm or a YouTube / Vimeo link (autoplays muted, looped; takes priority over the image)">
+        <input style={inputStyle} value={form.hero.video_url} onChange={(e) => set("hero.video_url", e.target.value)} placeholder="https://youtube.com/watch?v=… or https://…/banner.mp4" />
       </Field>
       <Field label="Hero subtitle"><input style={inputStyle} value={form.hero.subtitle} onChange={(e) => set("hero.subtitle", e.target.value)} /></Field>
       <Field label="About"><textarea style={{ ...inputStyle, minHeight: 70, resize: "vertical" }} value={form.about} onChange={(e) => set("about", e.target.value)} /></Field>
+
+      <Field label="Customer review images (one image URL per line — shown in an auto-sliding strip on your home page)">
+        <textarea
+          style={{ ...inputStyle, minHeight: 84, resize: "vertical" }}
+          value={(form.reviews || []).join("\n")}
+          onChange={(e) => set("reviews", e.target.value.split("\n"))}
+          placeholder={"https://…/review1.jpg\nhttps://…/review2.jpg"}
+        />
+      </Field>
 
       <div style={{ fontWeight: 700, fontSize: 13, margin: "18px 0 10px" }}>Policies</div>
       <Field label="Shipping policy"><textarea style={{ ...inputStyle, minHeight: 60, resize: "vertical" }} value={form.policies.shipping} onChange={(e) => set("policies.shipping", e.target.value)} /></Field>
