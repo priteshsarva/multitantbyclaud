@@ -369,6 +369,7 @@ function NavigationPanel({ siteId }) {
   const [navLayout, setNavLayout] = useState("single");    // single | double (logo-centred + second nav row)
   const [showCats, setShowCats] = useState(true);          // show categories in the menu
   const [showBrands, setShowBrands] = useState(false);     // show featured brands in the menu
+  const [subcatStyle, setSubcatStyle] = useState("link");  // featured sub-categories: individual links | under their category
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
@@ -395,6 +396,7 @@ function NavigationPanel({ siteId }) {
         setNavLayout(nav.layout === "double" ? "double" : "single");
         setShowCats(nav.show_categories !== false);
         setShowBrands(!!nav.show_brands);
+        setSubcatStyle(nav.subcat_style === "under" ? "under" : "link");
         setSubcatSel(Object.fromEntries((nav.subcats || []).map((s) =>
           [`${s.category}::${s.subcat}`, { category: s.category, subcat: s.subcat, label: s.label || s.subcat, on_home: s.on_home !== false }])));
         setSubbrandSel(Object.fromEntries((nav.subbrands || []).map((s) =>
@@ -481,6 +483,7 @@ function NavigationPanel({ siteId }) {
         layout: navLayout,
         show_categories: showCats,
         show_brands: showBrands,
+        subcat_style: subcatStyle,
       };
       await api.saveHostedSiteSettings(siteId, { nav });
       setSaved(true);
@@ -658,7 +661,12 @@ function NavigationPanel({ siteId }) {
               <label style={ckLbl}><input type="checkbox" checked={showCats} onChange={(e) => { setSaved(false); setShowCats(e.target.checked); }} /> Show categories</label>
               <label style={ckLbl}><input type="checkbox" checked={showBrands} onChange={(e) => { setSaved(false); setShowBrands(e.target.checked); }} /> Show featured brands</label>
             </div>
-            <div style={{ fontSize: 11, color: "#9aa3b2", marginTop: 5 }}>Pick either or both. Featured brands are the ones you tick under each category above.</div>
+            <div style={{ fontSize: 11, color: "#9aa3b2", marginTop: 5 }}>Pick either or both. Featured brands / sub-categories are the ones you tick under each category above.</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginTop: 8 }}>
+              <span style={{ fontSize: 12, color: "#42505f" }}>Featured sub-categories:</span>
+              <label style={ckLbl}><input type="radio" name="subcatStyle" checked={subcatStyle === "link"} onChange={() => { setSaved(false); setSubcatStyle("link"); }} /> Individual links</label>
+              <label style={ckLbl}><input type="radio" name="subcatStyle" checked={subcatStyle === "under"} onChange={() => { setSaved(false); setSubcatStyle("under"); }} /> Grouped under their category</label>
+            </div>
           </div>
           <label style={{ ...ckLbl, marginTop: 12, fontSize: 12.5 }}>
             <input type="checkbox" checked={hideUnmapped} onChange={(e) => { setSaved(false); setHideUnmapped(e.target.checked); }} />
