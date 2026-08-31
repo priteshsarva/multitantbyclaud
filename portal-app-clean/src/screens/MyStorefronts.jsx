@@ -357,6 +357,9 @@ function NavigationPanel({ siteId }) {
   const [brandSel, setBrandSel] = useState({});   // "cat brand" -> { on_home, label, thumbnail } (presence = featured)
   const [openCat, setOpenCat] = useState(null);   // which category's brand list is expanded
   const [hideUnmapped, setHideUnmapped] = useState(false); // hide sub-categories not renamed in your map
+  const [navLayout, setNavLayout] = useState("single");    // single | double (logo-centred + second nav row)
+  const [showCats, setShowCats] = useState(true);          // show categories in the menu
+  const [showBrands, setShowBrands] = useState(false);     // show featured brands in the menu
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
@@ -380,6 +383,9 @@ function NavigationPanel({ siteId }) {
         setBrandSel(Object.fromEntries((nav.brands || []).map((b) =>
           [bkey(b.category, b.brand), { category: b.category, brand: b.brand, on_home: b.on_home !== false, label: b.label || b.brand, thumbnail: b.thumbnail || "" }])));
         setHideUnmapped(!!nav.hide_unmapped);
+        setNavLayout(nav.layout === "double" ? "double" : "single");
+        setShowCats(nav.show_categories !== false);
+        setShowBrands(!!nav.show_brands);
       })
       .catch(setError);
   }, [siteId]);
@@ -416,6 +422,9 @@ function NavigationPanel({ siteId }) {
           category: v.category, brand: v.brand, label: (v.label || v.brand).trim(), on_home: !!v.on_home, thumbnail: (v.thumbnail || "").trim(),
         })),
         hide_unmapped: hideUnmapped,
+        layout: navLayout,
+        show_categories: showCats,
+        show_brands: showBrands,
       };
       await api.saveHostedSiteSettings(siteId, { nav });
       setSaved(true);
@@ -492,7 +501,23 @@ function NavigationPanel({ siteId }) {
               </div>
             );
           })}
-          <label style={{ ...ckLbl, marginTop: 10, fontSize: 12.5 }}>
+          <div style={{ borderTop: "1px solid #eef1f6", marginTop: 14, paddingTop: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#1b2230", marginBottom: 8 }}>Menu style</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 8 }}>
+              <label style={ckLbl}>
+                <input type="radio" name="navLayout" checked={navLayout === "single"} onChange={() => { setSaved(false); setNavLayout("single"); }} /> Single row
+              </label>
+              <label style={ckLbl}>
+                <input type="radio" name="navLayout" checked={navLayout === "double"} onChange={() => { setSaved(false); setNavLayout("double"); }} /> Double row (logo centred, menu below)
+              </label>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <label style={ckLbl}><input type="checkbox" checked={showCats} onChange={(e) => { setSaved(false); setShowCats(e.target.checked); }} /> Show categories</label>
+              <label style={ckLbl}><input type="checkbox" checked={showBrands} onChange={(e) => { setSaved(false); setShowBrands(e.target.checked); }} /> Show featured brands</label>
+            </div>
+            <div style={{ fontSize: 11, color: "#9aa3b2", marginTop: 5 }}>Pick either or both. Featured brands are the ones you tick under each category above.</div>
+          </div>
+          <label style={{ ...ckLbl, marginTop: 12, fontSize: 12.5 }}>
             <input type="checkbox" checked={hideUnmapped} onChange={(e) => { setSaved(false); setHideUnmapped(e.target.checked); }} />
             Hide un-mapped sub-categories from the menu (show only the ones you renamed in your category map)
           </label>
@@ -634,6 +659,7 @@ function HomepagePresetPanel({ siteId }) {
   const COMPONENT_TEMPLATES = [
     { id: "original", name: "Original (multi-category)", description: "Best-sellers rail per category + a mixed All-products rail. Shows every category you sell. Recommended.", section_count: "auto" },
     { id: "velocity", name: "Velocity (athletic / shoes)", description: "High-energy neon + crimson, floating shoe shots, men's/women's selector, tech breakdown. Built shoes-first — best for footwear stores.", section_count: "auto" },
+    { id: "chrono", name: "Chrono (luxe / watches)", description: "Same bold layout as Velocity in a gold + deep-blue palette, built watches-first — floating watch shots, movement/crystal tech breakdown. Best for watch stores.", section_count: "auto" },
   ];
 
   return (
@@ -689,6 +715,7 @@ function SettingsPanel({ siteId }) {
     return {
       store_name: s.store_name || "",
       logo_url: s.logo_url || "",
+      favicon_url: s.favicon_url || "",
       whatsapp: s.whatsapp || "",
       email: s.email || "",
       phone: s.phone || "",
@@ -766,6 +793,7 @@ function SettingsPanel({ siteId }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <Field label="Store name"><input style={inputStyle} value={form.store_name} onChange={(e) => set("store_name", e.target.value)} /></Field>
         <Field label="Logo URL"><input style={inputStyle} value={form.logo_url} onChange={(e) => set("logo_url", e.target.value)} placeholder="https://…" /></Field>
+        <Field label="Favicon URL (browser-tab icon)"><input style={inputStyle} value={form.favicon_url} onChange={(e) => set("favicon_url", e.target.value)} placeholder="https://…/favicon.png (falls back to your logo)" /></Field>
         <Field label="WhatsApp number (checkout)"><input style={inputStyle} value={form.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} placeholder="+91 98765 43210" /></Field>
         <Field label="Contact email"><input style={inputStyle} value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
         <Field label="Contact phone"><input style={inputStyle} value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>

@@ -61,6 +61,16 @@ export default function BrandMapping() {
     return m;
   }, [mappings]);
 
+  // unmapped brands first (they need attention), then mapped — each alphabetical
+  const sortedBrands = useMemo(() => {
+    if (!brands) return null;
+    return [...brands].sort((a, b) => {
+      const am = byRaw.has(a.name.toLowerCase()) ? 1 : 0;
+      const bm = byRaw.has(b.name.toLowerCase()) ? 1 : 0;
+      return am !== bm ? am - bm : a.name.localeCompare(b.name);
+    });
+  }, [brands, byRaw]);
+
   const mappedCount = (mappings || []).length;
 
   return (
@@ -72,16 +82,16 @@ export default function BrandMapping() {
         {/* all scraped brands to map */}
         <Card>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <div style={{ fontWeight: 700, fontSize: 14 }}>All scraped brands (A–Z)</div>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>All scraped brands (unmapped first)</div>
             {brands && <div style={{ fontSize: 11.5, color: "#9aa3b2" }}>{brands.length} shown · {mappedCount} mapped</div>}
           </div>
           <div style={{ position: "relative", marginBottom: 12 }}>
             <Search size={15} style={{ position: "absolute", left: 11, top: 10, color: "#9aa3b2" }} />
             <input style={{ ...inputStyle, paddingLeft: 32 }} placeholder="Search brands…" value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
-          {!brands ? <Spinner /> : brands.length === 0 ? <Empty msg="No brands match." /> : (
+          {!sortedBrands ? <Spinner /> : sortedBrands.length === 0 ? <Empty msg="No brands match." /> : (
             <div style={{ maxHeight: 560, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
-              {brands.map((b) => (
+              {sortedBrands.map((b) => (
                 <PoolRow key={b.name} name={b.name} count={b.count} mapping={byRaw.get(b.name.toLowerCase())} onSaved={loadMappings} onError={setError} />
               ))}
             </div>
