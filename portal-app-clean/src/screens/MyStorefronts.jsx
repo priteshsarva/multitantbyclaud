@@ -101,6 +101,11 @@ function CreateSiteModal({ onClose, onDone }) {
 
 function StoreDetail({ site, onBack, onChanged }) {
   const [srcVer, setSrcVer] = useState(0); // bumped on source change → NavigationPanel refetches its category list
+  // New/not-yet-live stores get the step-by-step guided setup; once active the
+  // full single-page editor (what we had) is the default. Toggle either way.
+  const [mode, setMode] = useState(site.status === "active" ? "edit" : "wizard");
+  const bumpSrc = () => setSrcVer((v) => v + 1);
+
   return (
     <div>
       <button onClick={onBack} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "#6b7688", fontSize: 13, padding: 0, marginBottom: 14 }}>
@@ -117,29 +122,159 @@ function StoreDetail({ site, onBack, onChanged }) {
             </a>
           </div>
         </div>
+        <Btn tone="ghost" small onClick={() => setMode((m) => (m === "wizard" ? "edit" : "wizard"))}>
+          {mode === "wizard" ? "Edit all settings" : "Guided setup"}
+        </Btn>
       </div>
 
-      {site.status !== "active" && (
+      {site.status === "paused" && (
+        <Card style={{ marginBottom: 18, background: "#fdecef", border: "1px solid #f3c2cc" }}>
+          <div style={{ fontSize: 13, color: "#a23a4b" }}>
+            This storefront is <strong>paused</strong> — buyers can't reach it. It paused because the renewal wasn't paid within the 5-day grace after expiry. Renew from the <strong>Payment</strong> step to bring it back online.
+          </div>
+        </Card>
+      )}
+      {site.status !== "active" && site.status !== "paused" && (
         <Card style={{ marginBottom: 18, background: "#fff7e6", border: "1px solid #f0d9a8" }}>
           <div style={{ fontSize: 13, color: "#8a6d2f" }}>
-            This storefront is <strong>{site.status}</strong> — it isn't reachable by buyers until an admin approves and activates it.
-            You can still set up branding and products now, so it's ready the moment it goes live.
+            This storefront is <strong>{site.status}</strong> — it goes live once an admin approves it and the first payment is made.
+            Set up branding and products now so it's ready the moment you pay.
           </div>
         </Card>
       )}
 
-      <ProductsPanel siteId={site.id} onChanged={() => setSrcVer((v) => v + 1)} />
-      <div style={{ height: 18 }} />
-      <NavigationPanel key={srcVer} siteId={site.id} />
-      <div style={{ height: 18 }} />
-      <HomepagePresetPanel siteId={site.id} />
-      <div style={{ height: 18 }} />
-      <CustomDomainPanel site={site} onChanged={onChanged} />
-      <div style={{ height: 18 }} />
-      <SettingsPanel siteId={site.id} />
-      <div style={{ height: 18 }} />
-      <OrdersPanel siteId={site.id} />
+      {mode === "wizard" ? (
+        <StoreSetupWizard site={site} srcVer={srcVer} bumpSrc={bumpSrc} onChanged={onChanged} />
+      ) : (
+        <>
+          <ProductsPanel siteId={site.id} onChanged={bumpSrc} />
+          <div style={{ height: 18 }} />
+          <NavigationPanel key={srcVer} siteId={site.id} />
+          <div style={{ height: 18 }} />
+          <HomepagePresetPanel siteId={site.id} />
+          <div style={{ height: 18 }} />
+          <CustomDomainPanel site={site} onChanged={onChanged} />
+          <div style={{ height: 18 }} />
+          <SettingsPanel siteId={site.id} />
+          <div style={{ height: 18 }} />
+          <PaymentPanel site={site} />
+          <div style={{ height: 18 }} />
+          <OrdersPanel siteId={site.id} />
+        </>
+      )}
     </div>
+  );
+}
+
+// Step-by-step guided setup. Required steps (branding, products) can't be
+// skipped; optional ones can. Payment is last and skippable — but the store only
+// goes live once it's paid.
+function StoreSetupWizard({ site, srcVer, bumpSrc, onChanged }) {
+  const steps = [
+    { key: "branding", title: "Branding", required: true, hint: "Name, logo, colours, contact — the essentials.", render: () => <SettingsPanel siteId={site.id} /> },
+    { key: "products", title: "Products", required: true, hint: "Pick which sources feed your storefront.", render: () => <ProductsPanel siteId={site.id} onChanged={bumpSrc} /> },
+    { key: "navigation", title: "Navigation & front page", required: false, hint: "Optional — curate your menu and home page.", render: () => <NavigationPanel key={srcVer} siteId={site.id} /> },
+    { key: "homepage", title: "Homepage layout", required: false, hint: "Optional — pick a ready-made layout.", render: () => <HomepagePresetPanel siteId={site.id} /> },
+    { key: "domain", title: "Custom domain", required: false, hint: "Optional — use your own domain.", render: () => <CustomDomainPanel site={site} onChanged={onChanged} /> },
+    { key: "payment", title: "Payment & go live", required: false, hint: "Skippable — but the store only goes live once paid.", render: () => <PaymentPanel site={site} /> },
+  ];
+  const [i, setI] = useState(0);
+  const step = steps[i];
+  const last = i === steps.length - 1;
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 20, alignItems: "start" }}>
+      {/* step rail */}
+      <Card style={{ position: "sticky", top: 16 }}>
+        <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>Setup steps</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+          {steps.map((s, j) => (
+            <button key={s.key} onClick={() => setI(j)}
+              style={{ display: "flex", alignItems: "center", gap: 9, textAlign: "left", border: "none", cursor: "pointer",
+                background: j === i ? "#eef6ff" : "transparent", borderRadius: 8, padding: "8px 10px", fontSize: 12.5,
+                color: j === i ? "#1b2230" : "#42505f", fontWeight: j === i ? 700 : 500 }}>
+              <span style={{ width: 20, height: 20, borderRadius: 999, display: "grid", placeItems: "center", fontSize: 11,
+                background: j < i ? "#C8FF3D" : j === i ? "#1b2230" : "#e6e9f0", color: j === i ? "#fff" : "#1b2230" }}>
+                {j < i ? "✓" : j + 1}
+              </span>
+              <span style={{ flex: 1 }}>{s.title}</span>
+              {!s.required && <span style={{ fontSize: 10, color: "#9aa3b2" }}>optional</span>}
+            </button>
+          ))}
+        </div>
+      </Card>
+
+      {/* current step */}
+      <div>
+        <div style={{ marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#1b2230" }}>{step.title}</h2>
+            <Badge status={step.required ? "required" : "optional"} />
+          </div>
+          <div style={{ fontSize: 12.5, color: "#6b7688", marginTop: 4 }}>{step.hint}</div>
+        </div>
+
+        {step.render()}
+
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 18 }}>
+          <Btn tone="ghost" disabled={i === 0} onClick={() => setI((n) => Math.max(0, n - 1))}>← Back</Btn>
+          <div style={{ flex: 1 }} />
+          {!step.required && !last && <Btn tone="ghost" onClick={() => setI((n) => n + 1)}>Skip</Btn>}
+          {!last && <Btn tone="lime" onClick={() => setI((n) => n + 1)}>Save &amp; continue →</Btn>}
+          {last && <Btn tone="lime" onClick={onChanged}>Done</Btn>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Payment step: shows the store's latest invoice and a Pay button. Paying
+// activates the store (and renews it when it's expired/paused).
+function PaymentPanel({ site }) {
+  const [invoices, setInvoices] = useState(null);
+  const [error, setError] = useState(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    api.invoices().then((r) => setInvoices((r.invoices || []).filter((iv) => iv.enrollment_id === site.id))).catch(setError);
+  }, [site.id]);
+
+  async function pay(id) {
+    setBusy(true); setError(null);
+    try { const r = await api.payInvoice(id); if (r.payment_url) window.location.href = r.payment_url; else setError(new Error("No payment URL returned.")); }
+    catch (e) { setError(e); setBusy(false); }
+  }
+
+  const unpaid = (invoices || []).find((iv) => iv.status !== "paid");
+
+  return (
+    <Card>
+      <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>Payment &amp; go live</div>
+      <div style={{ fontSize: 12.5, color: "#6b7688", marginBottom: 12 }}>
+        Your storefront goes live once payment is made. It stays active for a month; near expiry you'll be reminded, with a 5-day grace before it pauses.
+      </div>
+      <ErrorNote error={error} />
+      {site.status === "active" && (
+        <div style={{ fontSize: 13, color: "#2e7d32", marginBottom: 10 }}>
+          ✓ This storefront is <strong>live</strong>{site.expiry_date ? ` — renews on ${fmtDate(site.expiry_date)}` : ""}.
+        </div>
+      )}
+      {!invoices ? <Spinner /> : unpaid ? (
+        <div style={{ border: "1px solid #eef1f6", borderRadius: 10, padding: 14, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 14 }}>{unpaid.invoice_no} · ₹{Number(unpaid.amount).toLocaleString("en-IN")}</div>
+            <div style={{ fontSize: 12, color: "#6b7688", marginTop: 2 }}>{unpaid.status}{unpaid.due_date ? ` · due ${fmtDate(unpaid.due_date)}` : ""}</div>
+          </div>
+          <Btn tone="lime" disabled={busy} onClick={() => pay(unpaid.id)}>{busy ? "Redirecting…" : "Pay now"}</Btn>
+        </div>
+      ) : invoices.length === 0 ? (
+        <div style={{ fontSize: 13, color: "#8a6d2f" }}>
+          No invoice yet — your store is awaiting admin approval. An invoice appears here the moment it's approved; pay it to go live.
+        </div>
+      ) : (
+        <div style={{ fontSize: 13, color: "#2e7d32" }}>✓ All invoices paid.</div>
+      )}
+    </Card>
   );
 }
 
@@ -221,6 +356,19 @@ function NavigationPanel({ siteId }) {
   const [brandsAvail, setBrandsAvail] = useState({}); // cat -> [{name,count}] | "loading"
   const [brandSel, setBrandSel] = useState({});   // "cat brand" -> { on_home, label, thumbnail } (presence = featured)
   const [openCat, setOpenCat] = useState(null);   // which category's brand list is expanded
+  const [brandQuery, setBrandQuery] = useState({}); // cat -> search term for the featured-brand picker
+  const [subcatsAvail, setSubcatsAvail] = useState({});     // cat -> [{name,count}] | "loading"
+  const [subcatSel, setSubcatSel] = useState({});           // "cat::subcat" -> { category, subcat, label, on_home }
+  const [openSubcatCat, setOpenSubcatCat] = useState(null);
+  const [subbrandsAvail, setSubbrandsAvail] = useState({}); // "cat::brand" -> [{name,count}] | "loading"
+  const [subbrandSel, setSubbrandSel] = useState({});       // "cat::brand::sub" -> { category, brand, sub_brand, label, on_home }
+  const [openSubbrand, setOpenSubbrand] = useState(null);   // "cat::brand"
+  const [subbrandQuery, setSubbrandQuery] = useState({});   // "cat::brand" -> search term
+  const [links, setLinks] = useState([]);                   // custom nav links [{ label, url }]
+  const [hideUnmapped, setHideUnmapped] = useState(false); // hide sub-categories not renamed in your map
+  const [navLayout, setNavLayout] = useState("single");    // single | double (logo-centred + second nav row)
+  const [showCats, setShowCats] = useState(true);          // show categories in the menu
+  const [showBrands, setShowBrands] = useState(false);     // show featured brands in the menu
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
@@ -243,6 +391,15 @@ function NavigationPanel({ siteId }) {
         })));
         setBrandSel(Object.fromEntries((nav.brands || []).map((b) =>
           [bkey(b.category, b.brand), { category: b.category, brand: b.brand, on_home: b.on_home !== false, label: b.label || b.brand, thumbnail: b.thumbnail || "" }])));
+        setHideUnmapped(!!nav.hide_unmapped);
+        setNavLayout(nav.layout === "double" ? "double" : "single");
+        setShowCats(nav.show_categories !== false);
+        setShowBrands(!!nav.show_brands);
+        setSubcatSel(Object.fromEntries((nav.subcats || []).map((s) =>
+          [`${s.category}::${s.subcat}`, { category: s.category, subcat: s.subcat, label: s.label || s.subcat, on_home: s.on_home !== false }])));
+        setSubbrandSel(Object.fromEntries((nav.subbrands || []).map((s) =>
+          [`${s.category}::${s.brand}::${s.sub_brand}`, { category: s.category, brand: s.brand, sub_brand: s.sub_brand, label: s.label || s.sub_brand, on_home: s.on_home !== false }])));
+        setLinks(Array.isArray(nav.links) ? nav.links.map((l) => ({ label: l.label || "", url: l.url || "" })) : []);
       })
       .catch(setError);
   }, [siteId]);
@@ -268,6 +425,45 @@ function NavigationPanel({ siteId }) {
   }
   function setBrand(c, b, key, val) { setSaved(false); setBrandSel((m) => ({ ...m, [bkey(c, b)]: { ...m[bkey(c, b)], [key]: val } })); }
 
+  // ---- sub-categories ----
+  const skey = (c, s) => `${c}::${s}`;
+  async function toggleSubcatList(c) {
+    if (openSubcatCat === c) { setOpenSubcatCat(null); return; }
+    setOpenSubcatCat(c);
+    if (!subcatsAvail[c]) {
+      setSubcatsAvail((m) => ({ ...m, [c]: "loading" }));
+      try { const r = await api.hostedSiteSubcategories(siteId, c); setSubcatsAvail((m) => ({ ...m, [c]: r.subcategories || [] })); }
+      catch { setSubcatsAvail((m) => ({ ...m, [c]: [] })); }
+    }
+  }
+  function toggleSubcat(c, s) {
+    setSaved(false);
+    setSubcatSel((m) => { const k = skey(c, s); const n = { ...m }; if (n[k]) delete n[k]; else n[k] = { category: c, subcat: s, label: s, on_home: true }; return n; });
+  }
+  function setSubcat(c, s, key, val) { setSaved(false); setSubcatSel((m) => ({ ...m, [skey(c, s)]: { ...m[skey(c, s)], [key]: val } })); }
+
+  // ---- sub-brands (under a featured brand) ----
+  const sbkey = (c, b, s) => `${c}::${b}::${s}`;
+  async function toggleSubbrandList(c, b) {
+    const k = `${c}::${b}`;
+    if (openSubbrand === k) { setOpenSubbrand(null); return; }
+    setOpenSubbrand(k);
+    if (!subbrandsAvail[k]) {
+      setSubbrandsAvail((m) => ({ ...m, [k]: "loading" }));
+      try { const r = await api.hostedSiteSubBrands(siteId, c, b); setSubbrandsAvail((m) => ({ ...m, [k]: r.subbrands || [] })); }
+      catch { setSubbrandsAvail((m) => ({ ...m, [k]: [] })); }
+    }
+  }
+  function toggleSubbrand(c, b, s) {
+    setSaved(false);
+    setSubbrandSel((m) => { const k = sbkey(c, b, s); const n = { ...m }; if (n[k]) delete n[k]; else n[k] = { category: c, brand: b, sub_brand: s, label: s, on_home: true }; return n; });
+  }
+
+  // ---- custom links ----
+  function addLink() { setSaved(false); setLinks((l) => [...l, { label: "", url: "" }]); }
+  function setLink(i, key, val) { setSaved(false); setLinks((l) => l.map((row, j) => j === i ? { ...row, [key]: val } : row)); }
+  function removeLink(i) { setSaved(false); setLinks((l) => l.filter((_, j) => j !== i)); }
+
   async function save() {
     setBusy(true); setError(null); setSaved(false);
     try {
@@ -278,6 +474,13 @@ function NavigationPanel({ siteId }) {
         brands: Object.values(brandSel).map((v) => ({
           category: v.category, brand: v.brand, label: (v.label || v.brand).trim(), on_home: !!v.on_home, thumbnail: (v.thumbnail || "").trim(),
         })),
+        subcats: Object.values(subcatSel).map((v) => ({ category: v.category, subcat: v.subcat, label: (v.label || v.subcat).trim(), on_home: !!v.on_home })),
+        subbrands: Object.values(subbrandSel).map((v) => ({ category: v.category, brand: v.brand, sub_brand: v.sub_brand, label: (v.label || v.sub_brand).trim(), on_home: !!v.on_home })),
+        links: links.map((l) => ({ label: (l.label || "").trim(), url: (l.url || "").trim() })).filter((l) => l.label && l.url),
+        hide_unmapped: hideUnmapped,
+        layout: navLayout,
+        show_categories: showCats,
+        show_brands: showBrands,
       };
       await api.saveHostedSiteSettings(siteId, { nav });
       setSaved(true);
@@ -312,7 +515,10 @@ function NavigationPanel({ siteId }) {
                   <span style={{ fontSize: 13, fontWeight: 700, color: "#1b2230", minWidth: 70, textTransform: "capitalize" }}>{c}</span>
                   <label style={ckLbl}><input type="checkbox" checked={!!it.include} onChange={(e) => set(c, "include", e.target.checked)} /> In menu</label>
                   <label style={ckLbl}><input type="checkbox" checked={!!it.on_home} onChange={(e) => set(c, "on_home", e.target.checked)} /> On home</label>
-                  <button type="button" onClick={() => toggleBrandList(c)} style={{ marginLeft: "auto", ...linkBtn }}>
+                  <button type="button" onClick={() => toggleSubcatList(c)} style={{ marginLeft: "auto", ...linkBtn }}>
+                    {openSubcatCat === c ? "Hide sub-cats ▲" : "Sub-cats ▼"}
+                  </button>
+                  <button type="button" onClick={() => toggleBrandList(c)} style={{ ...linkBtn }}>
                     {openCat === c ? "Hide brands ▲" : "Brands ▼"}
                   </button>
                 </div>
@@ -321,14 +527,53 @@ function NavigationPanel({ siteId }) {
                   <input style={inputStyle} value={it.thumbnail || ""} onChange={(e) => set(c, "thumbnail", e.target.value)} placeholder="Thumbnail image URL (optional)" />
                 </div>
 
+                {openSubcatCat === c && (() => {
+                  const sav = subcatsAvail[c];
+                  return (
+                    <div style={{ marginTop: 10, borderTop: "1px dashed #e6e9f0", paddingTop: 10 }}>
+                      <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 0.4, color: "#9aa3b2", marginBottom: 6 }}>Featured sub-categories in {cap(c)}</div>
+                      {sav === "loading" || !sav ? <Spinner msg="Loading…" /> : sav.length === 0 ? (
+                        <div style={{ fontSize: 12, color: "#9aa3b2" }}>No sub-categories in this category yet.</div>
+                      ) : (
+                        <div style={{ maxHeight: 240, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+                          {sav.map((sc) => {
+                            const sel = subcatSel[skey(c, sc.name)];
+                            return (
+                              <div key={sc.name} style={{ border: "1px solid #f0f2f6", borderRadius: 8, padding: "7px 9px" }}>
+                                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, cursor: "pointer" }}>
+                                  <input type="checkbox" checked={!!sel} onChange={() => toggleSubcat(c, sc.name)} />
+                                  <span style={{ color: "#1b2230" }}>{sc.name}</span>
+                                  <span style={{ color: "#b3bccb", fontSize: 11 }}>{sc.count}</span>
+                                </label>
+                                {sel && (
+                                  <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 6, marginTop: 6 }}>
+                                    <input style={inputStyle} value={sel.label || ""} onChange={(e) => setSubcat(c, sc.name, "label", e.target.value)} placeholder={`Label (${sc.name})`} />
+                                    <label style={{ ...ckLbl, whiteSpace: "nowrap" }}><input type="checkbox" checked={sel.on_home !== false} onChange={(e) => setSubcat(c, sc.name, "on_home", e.target.checked)} /> Home</label>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+
                 {openCat === c && (
                   <div style={{ marginTop: 10, borderTop: "1px dashed #e6e9f0", paddingTop: 10 }}>
                     <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 0.4, color: "#9aa3b2", marginBottom: 6 }}>Featured brands in {cap(c)}</div>
                     {av === "loading" || !av ? <Spinner msg="Loading brands…" /> : av.length === 0 ? (
                       <div style={{ fontSize: 12, color: "#9aa3b2" }}>No brands with in-stock products in this category yet.</div>
-                    ) : (
+                    ) : (() => {
+                      const q = (brandQuery[c] || "").toLowerCase();
+                      const shown = q ? av.filter((br) => br.name.toLowerCase().includes(q)) : av;
+                      return (
+                      <>
+                      <input style={{ ...inputStyle, marginBottom: 8 }} value={brandQuery[c] || ""} onChange={(e) => setBrandQuery((m) => ({ ...m, [c]: e.target.value }))} placeholder={`Search brands (${av.length})…`} />
+                      {shown.length === 0 ? <div style={{ fontSize: 12, color: "#9aa3b2" }}>No brands match.</div> : (
                       <div style={{ maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
-                        {av.map((br) => {
+                        {shown.map((br) => {
                           const sel = brandSel[bkey(c, br.name)];
                           return (
                             <div key={br.name} style={{ border: "1px solid #f0f2f6", borderRadius: 8, padding: "7px 9px" }}>
@@ -337,24 +582,89 @@ function NavigationPanel({ siteId }) {
                                 <span style={{ color: "#1b2230" }}>{br.name}</span>
                                 <span style={{ color: "#b3bccb", fontSize: 11 }}>{br.count}</span>
                               </label>
-                              {sel && (
+                              {sel && (<>
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 6, marginTop: 6 }}>
                                   <input style={inputStyle} value={sel.label || ""} onChange={(e) => setBrand(c, br.name, "label", e.target.value)} placeholder={`Label (${br.name})`} />
                                   <input style={inputStyle} value={sel.thumbnail || ""} onChange={(e) => setBrand(c, br.name, "thumbnail", e.target.value)} placeholder="Thumbnail URL" />
                                   <label style={{ ...ckLbl, whiteSpace: "nowrap" }}><input type="checkbox" checked={sel.on_home !== false} onChange={(e) => setBrand(c, br.name, "on_home", e.target.checked)} /> Home</label>
                                 </div>
-                              )}
+                                <button type="button" onClick={() => toggleSubbrandList(c, br.name)} style={{ ...linkBtn, marginTop: 6 }}>
+                                  {openSubbrand === `${c}::${br.name}` ? "Hide sub-brands ▲" : "Sub-brands ▼"}
+                                </button>
+                                {openSubbrand === `${c}::${br.name}` && (() => {
+                                  const sbav = subbrandsAvail[`${c}::${br.name}`];
+                                  if (sbav === "loading" || !sbav) return <Spinner msg="Loading…" />;
+                                  if (sbav.length === 0) return <div style={{ fontSize: 11.5, color: "#9aa3b2", marginTop: 4 }}>No sub-brands for {br.name} here.</div>;
+                                  const sbk = `${c}::${br.name}`;
+                                  const sq = (subbrandQuery[sbk] || "").toLowerCase();
+                                  const sbshown = sq ? sbav.filter((sb) => sb.name.toLowerCase().includes(sq)) : sbav;
+                                  return (
+                                    <>
+                                      <input style={{ ...inputStyle, marginTop: 6 }} value={subbrandQuery[sbk] || ""} onChange={(e) => setSubbrandQuery((m) => ({ ...m, [sbk]: e.target.value }))} placeholder={`Search sub-brands (${sbav.length})…`} />
+                                      {sbshown.length === 0 ? <div style={{ fontSize: 11.5, color: "#9aa3b2", marginTop: 4 }}>No match.</div> : (
+                                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                                          {sbshown.map((sb) => {
+                                            const on = !!subbrandSel[sbkey(c, br.name, sb.name)];
+                                            return (
+                                              <label key={sb.name} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, border: `1px solid ${on ? "#C8FF3D" : "#eef1f6"}`, borderRadius: 6, padding: "3px 7px", cursor: "pointer" }}>
+                                                <input type="checkbox" checked={on} onChange={() => toggleSubbrand(c, br.name, sb.name)} /> {sb.name} <span style={{ color: "#b3bccb" }}>{sb.count}</span>
+                                              </label>
+                                            );
+                                          })}
+                                        </div>
+                                      )}
+                                    </>
+                                  );
+                                })()}
+                              </>)}
                             </div>
                           );
                         })}
                       </div>
-                    )}
+                      )}
+                      </>
+                      );
+                    })()}
                   </div>
                 )}
               </div>
             );
           })}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8 }}>
+
+          <div style={{ borderTop: "1px solid #eef1f6", marginTop: 14, paddingTop: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#1b2230", marginBottom: 4 }}>Custom links</div>
+            <div style={{ fontSize: 11, color: "#9aa3b2", marginBottom: 8 }}>Add any links you like to the menu — a sale page, a full external URL, a lookbook. Add as many as you want.</div>
+            {links.map((l, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr auto", gap: 6, marginBottom: 6 }}>
+                <input style={inputStyle} value={l.label} onChange={(e) => setLink(i, "label", e.target.value)} placeholder="Label (e.g. Sale)" />
+                <input style={inputStyle} value={l.url} onChange={(e) => setLink(i, "url", e.target.value)} placeholder="/c/shoes?sort=discount  or  https://…" />
+                <button type="button" onClick={() => removeLink(i)} style={{ border: "none", background: "none", cursor: "pointer", color: "#c4505f", fontSize: 16 }} title="Remove">✕</button>
+              </div>
+            ))}
+            <button type="button" onClick={addLink} style={{ ...linkBtn, marginTop: 2 }}>+ Add link</button>
+          </div>
+
+          <div style={{ borderTop: "1px solid #eef1f6", marginTop: 14, paddingTop: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#1b2230", marginBottom: 8 }}>Menu style</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 8 }}>
+              <label style={ckLbl}>
+                <input type="radio" name="navLayout" checked={navLayout === "single"} onChange={() => { setSaved(false); setNavLayout("single"); }} /> Single row
+              </label>
+              <label style={ckLbl}>
+                <input type="radio" name="navLayout" checked={navLayout === "double"} onChange={() => { setSaved(false); setNavLayout("double"); }} /> Double row (logo centred, menu below)
+              </label>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <label style={ckLbl}><input type="checkbox" checked={showCats} onChange={(e) => { setSaved(false); setShowCats(e.target.checked); }} /> Show categories</label>
+              <label style={ckLbl}><input type="checkbox" checked={showBrands} onChange={(e) => { setSaved(false); setShowBrands(e.target.checked); }} /> Show featured brands</label>
+            </div>
+            <div style={{ fontSize: 11, color: "#9aa3b2", marginTop: 5 }}>Pick either or both. Featured brands are the ones you tick under each category above.</div>
+          </div>
+          <label style={{ ...ckLbl, marginTop: 12, fontSize: 12.5 }}>
+            <input type="checkbox" checked={hideUnmapped} onChange={(e) => { setSaved(false); setHideUnmapped(e.target.checked); }} />
+            Hide un-mapped sub-categories from the menu (show only the ones you renamed in your category map)
+          </label>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
             <Btn tone="lime" onClick={save} disabled={busy}>{busy ? "Saving…" : "Save navigation"}</Btn>
             {saved && <span style={{ fontSize: 12.5, color: "#2e7d32" }}>Saved ✓</span>}
           </div>
@@ -369,6 +679,16 @@ const ckLbl = { display: "flex", alignItems: "center", gap: 5, fontSize: 12, col
 const linkBtn = { background: "none", border: "none", color: "#3b6fd8", fontSize: 12, cursor: "pointer", padding: 0 };
 
 const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");
+
+// Best achievable text contrast on a colour (using black OR white text), as a
+// WCAG contrast ratio. < 4.5 means even the better of black/white fails AA.
+function _rgb(hex) { let h = String(hex || "").replace("#", "").trim(); if (h.length === 3) h = h.split("").map((c) => c + c).join(""); if (!/^[0-9a-fA-F]{6}$/.test(h)) return null; return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); }
+function bestContrast(hex) {
+  const rgb = _rgb(hex); if (!rgb) return 21;
+  const [r, g, b] = rgb.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  const L = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return Math.max(1.05 / (L + 0.05), (L + 0.05) / 0.05); // vs white, vs black
+}
 
 function CustomDomainPanel({ site, onChanged }) {
   const [domain, setDomain] = useState(site.custom_domain || "");
@@ -456,15 +776,34 @@ function HomepagePresetPanel({ siteId }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.hostedSitePresets().then((r) => setPresets(r.presets || [])).catch(setError);
-  }, []);
+    // load the presets AND which one this site currently has applied, so the
+    // selection survives a page refresh (was resetting to none before).
+    Promise.all([api.hostedSitePresets(), api.hostedSiteSettings(siteId)])
+      .then(([pr, s]) => { setPresets(pr.presets || []); setApplied(s.settings?.preset || null); })
+      .catch(setError);
+  }, [siteId]);
 
   async function apply(id) {
-    setApplying(id); setApplied(null); setError(null);
-    try { await api.applyHostedSitePreset(siteId, id); setApplied(id); }
+    setApplying(id); setError(null);
+    try {
+      // component templates are hand-built pages selected by preset id (no section
+      // list); the rest are section-preset layouts built server-side.
+      if (COMPONENT_TEMPLATES.some((t) => t.id === id)) await api.saveHostedSiteSettings(siteId, { sections: [], preset: id });
+      else await api.applyHostedSitePreset(siteId, id);
+      setApplied(id);
+    }
     catch (e) { setError(e); }
     finally { setApplying(null); }
   }
+
+  // Hand-built full-page templates (rendered by their own component, not the
+  // section builder). "original" is the classic multi-category home; "velocity"
+  // is the shoe-first athletic template.
+  const COMPONENT_TEMPLATES = [
+    { id: "original", name: "Original (multi-category)", description: "Best-sellers rail per category + a mixed All-products rail. Shows every category you sell. Recommended.", section_count: "auto" },
+    { id: "velocity", name: "Velocity (athletic / shoes)", description: "High-energy neon + crimson, floating shoe shots, men's/women's selector, tech breakdown. Built shoes-first — best for footwear stores.", section_count: "auto" },
+    { id: "chrono", name: "Chrono (luxe / watches)", description: "Same bold layout as Velocity in a gold + deep-blue palette, built watches-first — floating watch shots, movement/crystal tech breakdown. Best for watch stores.", section_count: "auto" },
+  ];
 
   return (
     <Card>
@@ -476,16 +815,20 @@ function HomepagePresetPanel({ siteId }) {
       <ErrorNote error={error} />
       {!presets ? <Spinner msg="Loading presets…" /> : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 12 }}>
-          {presets.map((p) => (
-            <div key={p.id} style={{ border: applied === p.id ? "2px solid #C8FF3D" : "1px solid #e6e9f0", borderRadius: 10, padding: 14, background: "#fff" }}>
-              <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{p.name}</div>
-              <div style={{ fontSize: 12, color: "#6b7688", marginBottom: 10, minHeight: 32 }}>{p.description}</div>
-              <div style={{ fontSize: 11, color: "#9aa3b2", marginBottom: 10 }}>{p.section_count} sections</div>
-              <Btn small tone={applied === p.id ? "lime" : "ghost"} disabled={applying === p.id} onClick={() => apply(p.id)}>
-                {applying === p.id ? "Applying…" : applied === p.id ? "Applied ✓" : "Use this layout"}
-              </Btn>
-            </div>
-          ))}
+          {[...COMPONENT_TEMPLATES, ...presets].map((p) => {
+            // the original layout is "applied" whenever no preset id is stored
+            const isOn = p.id === "original" ? (!applied || applied === "original") : applied === p.id;
+            return (
+              <div key={p.id} style={{ border: isOn ? "2px solid #C8FF3D" : "1px solid #e6e9f0", borderRadius: 10, padding: 14, background: "#fff" }}>
+                <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 4 }}>{p.name}</div>
+                <div style={{ fontSize: 12, color: "#6b7688", marginBottom: 10, minHeight: 32 }}>{p.description}</div>
+                <div style={{ fontSize: 11, color: "#9aa3b2", marginBottom: 10 }}>{p.section_count === "auto" ? "auto-built" : `${p.section_count} sections`}</div>
+                <Btn small tone={isOn ? "lime" : "ghost"} disabled={applying === p.id} onClick={() => apply(p.id)}>
+                  {applying === p.id ? "Applying…" : isOn ? "Applied ✓" : "Use this layout"}
+                </Btn>
+              </div>
+            );
+          })}
         </div>
       )}
     </Card>
@@ -515,18 +858,25 @@ function SettingsPanel({ siteId }) {
     return {
       store_name: s.store_name || "",
       logo_url: s.logo_url || "",
+      favicon_url: s.favicon_url || "",
       whatsapp: s.whatsapp || "",
       email: s.email || "",
       phone: s.phone || "",
       announcement: s.announcement || "",
       about: s.about || "",
-      theme: { primary: (s.theme && s.theme.primary) || "#0E7A5F" },
+      theme: {
+        primary: (s.theme && s.theme.primary) || "#0E7A5F",
+        secondary: (s.theme && s.theme.secondary) || "#1a1512",
+        complementary: (s.theme && s.theme.complementary) || "#C8A24B",
+        background: (s.theme && s.theme.background) || "#ffffff",
+      },
       address: { line1: "", city: "", state: "", pincode: "", ...(s.address || {}) },
       social_urls: { instagram: "", facebook: "", youtube: "", community: "", ...(s.social_urls || {}) },
       hero: { title: "", subtitle: "", image_url: "", video_url: "", ...(s.hero || {}) },
       policies: { shipping: "", returns: "", privacy: "", terms: "", ...(s.policies || {}) },
       pricing: { bands, using_default: bandsFromServer.length === 0 },
       analytics: { ga4_id: "", meta_pixel_id: "", ...(s.analytics || {}) },
+      reviews: Array.isArray(s.reviews) ? s.reviews : [],
     };
   }
 
@@ -552,6 +902,7 @@ function SettingsPanel({ siteId }) {
       // vendor's edited bands.
       const payload = {
         ...form,
+        reviews: (form.reviews || []).map((s) => String(s).trim()).filter(Boolean),
         pricing: form.pricing.using_default ? {} : { bands: form.pricing.bands.map((b) => ({
           min: Number(b.min) || 0,
           max: b.max === null || b.max === "" || b.max === undefined ? null : Number(b.max),
@@ -585,10 +936,33 @@ function SettingsPanel({ siteId }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <Field label="Store name"><input style={inputStyle} value={form.store_name} onChange={(e) => set("store_name", e.target.value)} /></Field>
         <Field label="Logo URL"><input style={inputStyle} value={form.logo_url} onChange={(e) => set("logo_url", e.target.value)} placeholder="https://…" /></Field>
+        <Field label="Favicon URL (browser-tab icon)"><input style={inputStyle} value={form.favicon_url} onChange={(e) => set("favicon_url", e.target.value)} placeholder="https://…/favicon.png (falls back to your logo)" /></Field>
         <Field label="WhatsApp number (checkout)"><input style={inputStyle} value={form.whatsapp} onChange={(e) => set("whatsapp", e.target.value)} placeholder="+91 98765 43210" /></Field>
-        <Field label="Brand colour"><input type="color" style={{ ...inputStyle, padding: 4, height: 38 }} value={form.theme.primary} onChange={(e) => set("theme.primary", e.target.value)} /></Field>
         <Field label="Contact email"><input style={inputStyle} value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
         <Field label="Contact phone"><input style={inputStyle} value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 13, margin: "18px 0 6px" }}>Colour palette</div>
+      <div style={{ fontSize: 12, color: "#6b7688", marginBottom: 10 }}>
+        Four brand colours. Text on any coloured element is auto-set to black or white for readability.
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
+        {[["primary", "Primary"], ["secondary", "Secondary"], ["complementary", "Complementary"], ["background", "Background"]].map(([k, label]) => {
+          const lowContrast = bestContrast(form.theme[k]) < 4.5; // even black/white text can't hit WCAG AA
+          return (
+            <Field key={k} label={label}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <input type="color" style={{ width: 40, height: 38, padding: 2, border: "1px solid #d4d9e3", borderRadius: 6, cursor: "pointer" }} value={form.theme[k]} onChange={(e) => set(`theme.${k}`, e.target.value)} />
+                <input style={{ ...inputStyle, flex: 1 }} value={form.theme[k]} onChange={(e) => set(`theme.${k}`, e.target.value)} />
+              </div>
+              {lowContrast && (
+                <div style={{ fontSize: 11, color: "#b26a00", marginTop: 4, lineHeight: 1.3 }}>
+                  ⚠ Text may be hard to read on this colour — pick a darker or lighter shade.
+                </div>
+              )}
+            </Field>
+          );
+        })}
       </div>
 
       <div style={{ fontWeight: 700, fontSize: 13, margin: "18px 0 10px" }}>Address</div>
@@ -616,11 +990,20 @@ function SettingsPanel({ siteId }) {
         <Field label="Hero title"><input style={inputStyle} value={form.hero.title} onChange={(e) => set("hero.title", e.target.value)} /></Field>
         <Field label="Hero image URL"><input style={inputStyle} value={form.hero.image_url} onChange={(e) => set("hero.image_url", e.target.value)} placeholder="https://…" /></Field>
       </div>
-      <Field label="Hero video URL (.mp4 — takes priority over the image, like the original site)">
-        <input style={inputStyle} value={form.hero.video_url} onChange={(e) => set("hero.video_url", e.target.value)} placeholder="https://…/banner.mp4" />
+      <Field label="Hero video URL — .mp4/.webm or a YouTube / Vimeo link (autoplays muted, looped; takes priority over the image)">
+        <input style={inputStyle} value={form.hero.video_url} onChange={(e) => set("hero.video_url", e.target.value)} placeholder="https://youtube.com/watch?v=… or https://…/banner.mp4" />
       </Field>
       <Field label="Hero subtitle"><input style={inputStyle} value={form.hero.subtitle} onChange={(e) => set("hero.subtitle", e.target.value)} /></Field>
       <Field label="About"><textarea style={{ ...inputStyle, minHeight: 70, resize: "vertical" }} value={form.about} onChange={(e) => set("about", e.target.value)} /></Field>
+
+      <Field label="Customer review images (one image URL per line — shown in an auto-sliding strip on your home page)">
+        <textarea
+          style={{ ...inputStyle, minHeight: 84, resize: "vertical" }}
+          value={(form.reviews || []).join("\n")}
+          onChange={(e) => set("reviews", e.target.value.split("\n"))}
+          placeholder={"https://…/review1.jpg\nhttps://…/review2.jpg"}
+        />
+      </Field>
 
       <div style={{ fontWeight: 700, fontSize: 13, margin: "18px 0 10px" }}>Policies</div>
       <Field label="Shipping policy"><textarea style={{ ...inputStyle, minHeight: 60, resize: "vertical" }} value={form.policies.shipping} onChange={(e) => set("policies.shipping", e.target.value)} /></Field>
@@ -731,7 +1114,12 @@ function OrdersPanel({ siteId }) {
                       <div style={{ margin: "12px 0", display: "flex", flexDirection: "column", gap: 6 }}>
                         {detail[o.id].items.map((it) => (
                           <div key={it.id} style={{ display: "flex", justifyContent: "space-between", fontSize: 12.5, color: "#42505f" }}>
-                            <span>{it.product_name}{it.size ? ` (Size ${it.size})` : ""} × {it.qty}</span>
+                            <span>
+                              {it.page_url
+                                ? <a href={it.page_url} target="_blank" rel="noreferrer" style={{ color: "#3b6fd8", textDecoration: "none" }}>{it.product_name}</a>
+                                : it.product_name}
+                              {it.size ? ` (Size ${it.size})` : ""} × {it.qty}
+                            </span>
                             <span>₹{Number(it.line_total).toLocaleString("en-IN")}</span>
                           </div>
                         ))}

@@ -9,9 +9,6 @@ export default function Login({ onLogin }) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
-  const [shopUrl, setShopUrl] = useState("");
-  const [planId, setPlanId] = useState("");
-  const [plans, setPlans] = useState([]);
   // optional
   const [instagram, setInstagram] = useState("");
   const [facebook, setFacebook] = useState("");
@@ -22,15 +19,8 @@ export default function Login({ onLogin }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (mode === "signup" && plans.length === 0) {
-      api.publicPlans().then((r) => setPlans(r.plans || [])).catch(() => {});
-    }
-  }, [mode]);
-
   async function submit(e) {
     e.preventDefault();
-    if (mode === "signup" && !planId) { setError(new Error("Please choose a plan")); return; }
     setBusy(true); setError(null);
     try {
       let res;
@@ -42,7 +32,6 @@ export default function Login({ onLogin }) {
         if (facebook) social_urls.facebook = facebook;
         res = await api.signup({
           email, password, name, mobile,
-          shop_url: shopUrl, plan_id: planId,
           social_urls,
           whatsapp_number: whatsappNumber || undefined,
           whatsapp_community_url: whatsappCommunity || undefined,
@@ -72,7 +61,7 @@ export default function Login({ onLogin }) {
           <strong style={{ fontSize: 17 }}>Server Products</strong>
         </div>
         <p style={{ color: "#6b7688", fontSize: 13, margin: "0 0 20px" }}>
-          {isSignup ? "Create your account and add your first shop." : "Sign in to your portal."}
+          {isSignup ? "Create your account to get started." : "Sign in to your portal."}
         </p>
 
         <ErrorNote error={error} />
@@ -93,20 +82,6 @@ export default function Login({ onLogin }) {
             <>
               <Field label="Mobile number">
                 <input style={inputStyle} required value={mobile} onChange={(e) => setMobile(e.target.value)} placeholder="+91 98765 43210" />
-              </Field>
-              <Field label="Your shop URL">
-                <input style={inputStyle} required value={shopUrl} onChange={(e) => setShopUrl(e.target.value)} placeholder="https://mystore.com" />
-              </Field>
-              <Field label="Plan">
-                <select style={inputStyle} required value={planId} onChange={(e) => setPlanId(e.target.value)}>
-                  <option value="">Choose a plan…</option>
-                  {plans.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name} — {p.currency} {Number(p.price).toLocaleString("en-IN")}/{p.interval}
-                    </option>
-                  ))}
-                </select>
-                {plans.length === 0 && <div style={{ fontSize: 11.5, color: "#9aa3b2", marginTop: 4 }}>No plans available yet — contact the admin.</div>}
               </Field>
 
               <button type="button" onClick={() => setShowOptional((v) => !v)}

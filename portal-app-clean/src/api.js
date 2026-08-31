@@ -44,6 +44,11 @@ export const api = {
 
   // ---- admin: clients + settings ----
   adminUsers: (q) => req(`/portal/admin/users${q ? `?q=${encodeURIComponent(q)}` : ""}`),
+  adminSetUserPassword: (id, password) => req(`/portal/admin/users/${id}/set-password`, { method: "POST", body: password ? { password } : {} }),
+  adminBrandMap: () => req("/portal/admin/brand-map"),
+  adminSaveBrandMap: (raw, canonical, secondary) => req("/portal/admin/brand-map", { method: "PUT", body: { raw, canonical, secondary } }),
+  adminDeleteBrandMap: (raw) => req(`/portal/admin/brand-map/${encodeURIComponent(raw)}`, { method: "DELETE" }),
+  adminBrands: (q) => req(`/portal/admin/brands${q ? `?q=${encodeURIComponent(q)}` : ""}`),
   adminGetSmtp: () => req("/portal/admin/settings/smtp"),
   adminSaveSmtp: (cfg) => req("/portal/admin/settings/smtp", { method: "PUT", body: cfg }),
   adminTestSmtp: (to) => req("/portal/admin/settings/smtp/test", { method: "POST", body: { to } }),
@@ -82,6 +87,8 @@ export const api = {
     req(`/portal/admin/sources/${id}/categories`, { method: "PATCH", body: { cat_name, enabled } }),
   adminRefreshCategories: (id, mode) =>
     req(`/portal/admin/sources/${id}/categories/refresh`, { method: "POST", body: { mode } }),
+  adminRefreshAllCategories: () =>
+    req("/portal/admin/sources/categories/refresh-all", { method: "POST" }),
   adminSetSourceStatus: (id, status) =>
     req(`/portal/admin/sources/${id}`, { method: "PATCH", body: { status } }),
 
@@ -104,6 +111,10 @@ export const api = {
 
   // ---- client: hosted storefronts ----
   myHostedSites: () => req("/portal/hosted-sites"),
+  hostedOrders: (params) => req(`/portal/hosted-orders${params ? `?${new URLSearchParams(params)}` : ""}`),
+  hostedAnalytics: () => req("/portal/hosted-analytics"),
+  catalogue: (params) => req(`/portal/catalogue${params ? `?${new URLSearchParams(params)}` : ""}`),
+  notifications: () => req("/portal/notifications"),
   createHostedSite: (store_name, slug) => req("/portal/hosted-sites", { method: "POST", body: { store_name, slug } }),
   hostedSiteSettings: (id) => req(`/portal/hosted-sites/${id}/settings`),
   saveHostedSiteSettings: (id, settings) => req(`/portal/hosted-sites/${id}/settings`, { method: "PUT", body: settings }),
@@ -113,6 +124,8 @@ export const api = {
     req(`/portal/hosted-sites/${id}/orders/${orderId}`, { method: "PATCH", body: { status } }),
   hostedSiteSources: (id) => req(`/portal/hosted-sites/${id}/sources`),
   hostedSiteBrands: (id, category) => req(`/portal/hosted-sites/${id}/brands?category=${encodeURIComponent(category)}`),
+  hostedSiteSubcategories: (id, category) => req(`/portal/hosted-sites/${id}/subcategories?category=${encodeURIComponent(category)}`),
+  hostedSiteSubBrands: (id, category, brand) => req(`/portal/hosted-sites/${id}/subbrands?category=${encodeURIComponent(category)}&brand=${encodeURIComponent(brand)}`),
   saveHostedSiteSources: (id, source_ids) =>
     req(`/portal/hosted-sites/${id}/sources`, { method: "PUT", body: { source_ids } }),
   hostedSitePresets: () => req("/portal/hosted-sites/presets"),

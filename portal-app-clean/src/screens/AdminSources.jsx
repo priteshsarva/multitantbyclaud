@@ -9,6 +9,7 @@ export default function AdminSources() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("all");
   const [active, setActive] = useState(null); // source being inspected
+  const [refreshingAll, setRefreshingAll] = useState(false);
 
   useEffect(() => {
     api.adminSources().then((r) => setSources(r.sources || [])).catch(setError);
@@ -39,9 +40,22 @@ export default function AdminSources() {
     } catch (e) { alert(e.message); }
   }
 
+  async function refreshAll() {
+    if (!window.confirm("Re-derive every source's categories (+ in-stock counts) from the stored products? Takes a few seconds.")) return;
+    setRefreshingAll(true);
+    try { const r = await api.adminRefreshAllCategories(); alert(`Refreshed ${r.categories} categories across all sources.`); }
+    catch (e) { alert(e.message); }
+    finally { setRefreshingAll(false); }
+  }
+
   return (
     <div>
-      <PageHead title="Sources" sub={sources ? `${sources.length} sources in the registry` : "Loading…"} />
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12 }}>
+        <PageHead title="Sources" sub={sources ? `${sources.length} sources in the registry` : "Loading…"} />
+        <Btn tone="ghost" onClick={refreshAll} disabled={refreshingAll}>
+          <RefreshCw size={14} style={{ verticalAlign: "-2px" }} /> {refreshingAll ? "Refreshing…" : "Refresh all categories"}
+        </Btn>
+      </div>
       <ErrorNote error={error} />
 
       <div style={{ display: "flex", gap: 10, marginBottom: 14 }}>
@@ -116,24 +130,41 @@ function CategoriesModal({ source, onClose }) {
     setBusy(true);
     try { await api.adminRefreshCategories(source.id, "scrape"); await load(); } catch (e) { setError(e); } finally { setBusy(false); }
   }
+  async function refreshFromDb() {
+    setBusy(true);
+    try { await api.adminRefreshCategories(source.id, "db"); await load(); } catch (e) { setError(e); } finally { setBusy(false); }
+  }
 
   return (
     <Modal title={`${source.name} — categories`} onClose={onClose}>
       <ErrorNote error={error} />
-      <div style={{ marginBottom: 12 }}>
+      <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+        <Btn small tone="lime" onClick={refreshFromDb} disabled={busy}>
+          <RefreshCw size={13} style={{ verticalAlign: "-2px" }} /> {busy ? "Working…" : "Refresh from products"}
+        </Btn>
         <Btn small tone="ghost" onClick={rescrape} disabled={busy}>
           <RefreshCw size={13} style={{ verticalAlign: "-2px" }} /> {busy ? "Scraping…" : "Re-scrape from site"}
         </Btn>
       </div>
-      {!cats ? <Spinner /> : cats.length === 0 ? <Empty msg="No categories. Try re-scrape." /> : (
+      {cats && cats.length > 0 && (
+        <div style={{ fontSize: 12, color: "#42505f", marginBottom: 10, padding: "8px 11px", background: "#f7f8fb", borderRadius: 8 }}>
+          <strong>{cats.reduce((s, c) => s + (c.product_count || 0), 0).toLocaleString("en-IN")}</strong> total products ·{" "}
+          <strong>{cats.reduce((s, c) => s + (c.in_stock_count || 0), 0).toLocaleString("en-IN")}</strong> in stock ·{" "}
+          {cats.length} categories
+        </div>
+      )}
+      {!cats ? <Spinner /> : cats.length === 0 ? <Empty msg="No categories. Try refresh from products." /> : (
         <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
           {cats.map((c) => (
             <div key={c.cat_name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 11px", border: "1px solid #eef1f6", borderRadius: 9 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
                 {c.img && <img src={c.img} alt="" style={{ width: 30, height: 30, borderRadius: 6, objectFit: "cover" }} />}
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>{c.cat_name}</div>
-                  <div style={{ fontSize: 11.5, color: "#9aa3b2" }}>{c.product_count} products</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                    {c.cat_name}
+                    {c.no_stock && <span style={{ fontSize: 9.5, fontWeight: 700, color: "#b26a00", background: "#fff3e0", padding: "1px 6px", borderRadius: 4 }}>NO STOCK</span>}
+                  </div>
+                  <div style={{ fontSize: 11.5, color: "#9aa3b2" }}>{c.product_count} products · {c.in_stock_count} in stock</div>
                 </div>
               </div>
               <button onClick={() => toggle(c)} style={{ border: "none", background: c.enabled ? C.lime : "#e6e9f0", color: c.enabled ? C.ink : "#6b7688", padding: "4px 10px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer" }}>

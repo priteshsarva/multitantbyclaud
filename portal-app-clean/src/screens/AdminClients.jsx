@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { api } from "../api.js";
-import { C, PageHead, Card, Btn, Badge, Spinner, ErrorNote, Empty, Modal, inputStyle, fmtDate } from "../ui.jsx";
+import { C, PageHead, Card, Btn, Badge, Spinner, ErrorNote, Empty, Modal, inputStyle, fmtDate, storeUrl } from "../ui.jsx";
 
 // every field collected at signup, shown to the admin
 export default function AdminClients() {
@@ -66,6 +66,23 @@ export default function AdminClients() {
 function ClientModal({ u, onClose }) {
   const social = u.social_urls && typeof u.social_urls === "object" ? u.social_urls : {};
   const socialRows = Object.entries(social).filter(([, v]) => v);
+  const sites = Array.isArray(u.sites) ? u.sites : [];
+  const [pw, setPw] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [result, setResult] = useState(null); // { temp_password? } or error string
+
+  async function reset(generate) {
+    setBusy(true); setResult(null);
+    try {
+      const r = await api.adminSetUserPassword(u.id, generate ? "" : pw);
+      setResult(r.temp_password
+        ? `Temporary password set: ${r.temp_password} — share it with ${r.email}; they can change it after logging in.`
+        : `Password updated for ${r.email}.`);
+      setPw("");
+    } catch (e) { setResult("Error: " + e.message); }
+    finally { setBusy(false); }
+  }
+
   return (
     <Modal title={u.name || u.email} onClose={onClose}>
       <Row label="Email" value={u.email} />
@@ -73,9 +90,30 @@ function ClientModal({ u, onClose }) {
       <Row label="WhatsApp number" value={u.whatsapp_number} />
       <Row label="WhatsApp community" value={u.whatsapp_community_url} link />
       {socialRows.map(([k, v]) => <Row key={k} label={k[0].toUpperCase() + k.slice(1)} value={v} link />)}
-      <Row label="Shops" value={(u.domains || []).join(", ")} />
+      <Row label="Plugin shops" value={(u.domains || []).join(", ")} />
+      <Row label="Orders" value={`${u.orders || 0} · ₹${Number(u.order_sales || 0).toLocaleString("en-IN")} sales`} />
       <Row label="Status" value={<Badge status={u.status} />} raw />
       <Row label="Joined" value={fmtDate(u.created_at)} />
+
+      <div style={{ fontWeight: 700, fontSize: 13, margin: "16px 0 8px" }}>Storefronts ({sites.length})</div>
+      {sites.length === 0 ? <div style={{ fontSize: 12.5, color: "#9aa3b2" }}>No storefronts.</div> : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {sites.map((s) => (
+            <div key={s.slug} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12.5, border: "1px solid #eef1f6", borderRadius: 8, padding: "7px 10px" }}>
+              <a href={storeUrl(s.slug)} target="_blank" rel="noreferrer" style={{ color: "#3b6fd8", textDecoration: "none" }}>{s.slug}</a>
+              <Badge status={s.status} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ fontWeight: 700, fontSize: 13, margin: "16px 0 8px" }}>Reset password</div>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+        <input style={{ ...inputStyle, flex: 1, minWidth: 160 }} type="text" placeholder="New password (or generate)" value={pw} onChange={(e) => setPw(e.target.value)} />
+        <Btn small tone="lime" disabled={busy || !pw} onClick={() => reset(false)}>Set</Btn>
+        <Btn small tone="ghost" disabled={busy} onClick={() => reset(true)}>Generate temp</Btn>
+      </div>
+      {result && <div style={{ fontSize: 12.5, color: result.startsWith("Error") ? "#b3261e" : "#2e7d32", marginTop: 8, wordBreak: "break-word" }}>{result}</div>}
     </Modal>
   );
 }
