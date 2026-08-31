@@ -151,6 +151,8 @@ function StoreDetail({ site, onBack, onChanged }) {
           <div style={{ height: 18 }} />
           <NavigationPanel key={srcVer} siteId={site.id} />
           <div style={{ height: 18 }} />
+          <CategoryMapPanel key={`cm${srcVer}`} site={site} />
+          <div style={{ height: 18 }} />
           <StoreBrandMapPanel key={`bm${srcVer}`} siteId={site.id} />
           <div style={{ height: 18 }} />
           <HomepagePresetPanel siteId={site.id} />
@@ -411,6 +413,80 @@ function StoreBrandMapPanel({ siteId }) {
       {!shown ? <Spinner /> : shown.length === 0 ? <Empty msg="No brands." /> : (
         <div style={{ maxHeight: 420, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
           {shown.map((b) => <StoreBrandRow key={b.name} siteId={siteId} b={b} onSaved={load} onError={setError} />)}
+        </div>
+      )}
+    </Card>
+  );
+}
+
+// Per-store category grouping — map the store's raw scraped catNames to clean
+// canonical sub-categories, store-wide. Each row has a link to preview that
+// category on the live storefront.
+const CatMapRow = React.memo(function CatMapRow({ siteId, c, storeLink, onSaved, onError }) {
+  const [canon, setCanon] = useState(c.canonical || "");
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { setCanon(c.canonical || ""); }, [c.canonical]);
+  async function save() {
+    setBusy(true);
+    try { await api.hostedSiteSaveCategoryMap(siteId, c.db_name, c.name, canon.trim()); onSaved(); }
+    catch (e) { onError(e); } finally { setBusy(false); }
+  }
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr auto auto", gap: 7, alignItems: "center", border: "1px solid #eef1f6", borderRadius: 8, padding: "7px 9px" }}>
+      <div style={{ fontSize: 12.5, minWidth: 0 }}>
+        <div style={{ color: c.canonical ? "#1b2230" : "#a23a4b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</div>
+        <div style={{ fontSize: 10.5, color: "#b3bccb" }}><span style={{ textTransform: "uppercase" }}>{c.db_name}</span> · {c.count}{c.canonical ? "" : " · unmapped"}</div>
+      </div>
+      <ArrowRight size={13} color="#c4ccd8" />
+      <input style={{ ...inputStyle, padding: "6px 8px", fontSize: 12.5 }} placeholder="Canonical sub-category…" value={canon} onChange={(e) => setCanon(e.target.value)} />
+      <Btn small tone="lime" disabled={busy} onClick={save}>{c.canonical ? "Update" : "Map"}</Btn>
+      <a href={storeLink(c.db_name, (canon.trim() || c.name))} target="_blank" rel="noreferrer" title="Preview on storefront" style={{ color: "#3b6fd8", display: "flex" }}><ExternalLink size={14} /></a>
+    </div>
+  );
+});
+
+function CategoryMapPanel({ site }) {
+  const [cats, setCats] = useState(null);
+  const [q, setQ] = useState("");
+  const [error, setError] = useState(null);
+  function load() { api.hostedSiteAllCategories(site.id).then((r) => setCats(r.categories || [])).catch(setError); }
+  useEffect(() => { load(); }, [site.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const shown = useMemo(() => {
+    if (!cats) return null;
+    const ql = q.trim().toLowerCase();
+    return cats
+      .filter((c) => !ql || c.name.toLowerCase().includes(ql) || (c.canonical || "").toLowerCase().includes(ql))
+      .sort((a, b) => ((a.canonical ? 1 : 0) - (b.canonical ? 1 : 0)) || a.db_name.localeCompare(b.db_name) || a.name.localeCompare(b.name));
+  }, [cats, q]);
+  const mapped = (cats || []).filter((c) => c.canonical).length;
+  // storefront listing link for a (db, canonical) — keeps the ?store= param in dev
+  const storeLink = (db, cat) => {
+    try {
+      const u = new URL(storeUrl(site.slug));
+      const store = u.searchParams.get("store");
+      u.search = ""; u.pathname = `/c/${db}`;
+      u.searchParams.set("cat", cat);
+      if (store) u.searchParams.set("store", store);
+      return u.toString();
+    } catch { return "#"; }
+  };
+  return (
+    <Card>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+        <div style={{ fontWeight: 700, fontSize: 15 }}>Category grouping</div>
+        {cats && <div style={{ fontSize: 11.5, color: "#9aa3b2" }}>{cats.length} in this store · {mapped} mapped</div>}
+      </div>
+      <div style={{ fontSize: 12.5, color: "#6b7688", marginBottom: 10 }}>
+        Fold the store's raw scraped categories into clean sub-categories. Unmapped first; the ↗ opens that category on your storefront.
+      </div>
+      <ErrorNote error={error} />
+      <div style={{ position: "relative", marginBottom: 10 }}>
+        <Search size={15} style={{ position: "absolute", left: 11, top: 10, color: "#9aa3b2" }} />
+        <input style={{ ...inputStyle, paddingLeft: 32 }} placeholder="Search categories…" value={q} onChange={(e) => setQ(e.target.value)} />
+      </div>
+      {!shown ? <Spinner /> : shown.length === 0 ? <Empty msg="No categories." /> : (
+        <div style={{ maxHeight: 420, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+          {shown.map((c) => <CatMapRow key={`${c.db_name}::${c.name}`} siteId={site.id} c={c} storeLink={storeLink} onSaved={load} onError={setError} />)}
         </div>
       )}
     </Card>
