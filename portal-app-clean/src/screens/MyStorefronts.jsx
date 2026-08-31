@@ -363,6 +363,7 @@ function NavigationPanel({ siteId }) {
   const [subbrandsAvail, setSubbrandsAvail] = useState({}); // "cat::brand" -> [{name,count}] | "loading"
   const [subbrandSel, setSubbrandSel] = useState({});       // "cat::brand::sub" -> { category, brand, sub_brand, label, on_home }
   const [openSubbrand, setOpenSubbrand] = useState(null);   // "cat::brand"
+  const [subbrandQuery, setSubbrandQuery] = useState({});   // "cat::brand" -> search term
   const [links, setLinks] = useState([]);                   // custom nav links [{ label, url }]
   const [hideUnmapped, setHideUnmapped] = useState(false); // hide sub-categories not renamed in your map
   const [navLayout, setNavLayout] = useState("single");    // single | double (logo-centred + second nav row)
@@ -592,19 +593,27 @@ function NavigationPanel({ siteId }) {
                                 </button>
                                 {openSubbrand === `${c}::${br.name}` && (() => {
                                   const sbav = subbrandsAvail[`${c}::${br.name}`];
-                                  return sbav === "loading" || !sbav ? <Spinner msg="Loading…" /> : sbav.length === 0 ? (
-                                    <div style={{ fontSize: 11.5, color: "#9aa3b2", marginTop: 4 }}>No sub-brands for {br.name} here.</div>
-                                  ) : (
-                                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
-                                      {sbav.map((sb) => {
-                                        const on = !!subbrandSel[sbkey(c, br.name, sb.name)];
-                                        return (
-                                          <label key={sb.name} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, border: `1px solid ${on ? "#C8FF3D" : "#eef1f6"}`, borderRadius: 6, padding: "3px 7px", cursor: "pointer" }}>
-                                            <input type="checkbox" checked={on} onChange={() => toggleSubbrand(c, br.name, sb.name)} /> {sb.name} <span style={{ color: "#b3bccb" }}>{sb.count}</span>
-                                          </label>
-                                        );
-                                      })}
-                                    </div>
+                                  if (sbav === "loading" || !sbav) return <Spinner msg="Loading…" />;
+                                  if (sbav.length === 0) return <div style={{ fontSize: 11.5, color: "#9aa3b2", marginTop: 4 }}>No sub-brands for {br.name} here.</div>;
+                                  const sbk = `${c}::${br.name}`;
+                                  const sq = (subbrandQuery[sbk] || "").toLowerCase();
+                                  const sbshown = sq ? sbav.filter((sb) => sb.name.toLowerCase().includes(sq)) : sbav;
+                                  return (
+                                    <>
+                                      <input style={{ ...inputStyle, marginTop: 6 }} value={subbrandQuery[sbk] || ""} onChange={(e) => setSubbrandQuery((m) => ({ ...m, [sbk]: e.target.value }))} placeholder={`Search sub-brands (${sbav.length})…`} />
+                                      {sbshown.length === 0 ? <div style={{ fontSize: 11.5, color: "#9aa3b2", marginTop: 4 }}>No match.</div> : (
+                                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                                          {sbshown.map((sb) => {
+                                            const on = !!subbrandSel[sbkey(c, br.name, sb.name)];
+                                            return (
+                                              <label key={sb.name} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, border: `1px solid ${on ? "#C8FF3D" : "#eef1f6"}`, borderRadius: 6, padding: "3px 7px", cursor: "pointer" }}>
+                                                <input type="checkbox" checked={on} onChange={() => toggleSubbrand(c, br.name, sb.name)} /> {sb.name} <span style={{ color: "#b3bccb" }}>{sb.count}</span>
+                                              </label>
+                                            );
+                                          })}
+                                        </div>
+                                      )}
+                                    </>
                                   );
                                 })()}
                               </>)}
