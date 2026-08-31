@@ -357,6 +357,13 @@ function NavigationPanel({ siteId }) {
   const [brandSel, setBrandSel] = useState({});   // "cat brand" -> { on_home, label, thumbnail } (presence = featured)
   const [openCat, setOpenCat] = useState(null);   // which category's brand list is expanded
   const [brandQuery, setBrandQuery] = useState({}); // cat -> search term for the featured-brand picker
+  const [subcatsAvail, setSubcatsAvail] = useState({});     // cat -> [{name,count}] | "loading"
+  const [subcatSel, setSubcatSel] = useState({});           // "cat::subcat" -> { category, subcat, label, on_home }
+  const [openSubcatCat, setOpenSubcatCat] = useState(null);
+  const [subbrandsAvail, setSubbrandsAvail] = useState({}); // "cat::brand" -> [{name,count}] | "loading"
+  const [subbrandSel, setSubbrandSel] = useState({});       // "cat::brand::sub" -> { category, brand, sub_brand, label, on_home }
+  const [openSubbrand, setOpenSubbrand] = useState(null);   // "cat::brand"
+  const [links, setLinks] = useState([]);                   // custom nav links [{ label, url }]
   const [hideUnmapped, setHideUnmapped] = useState(false); // hide sub-categories not renamed in your map
   const [navLayout, setNavLayout] = useState("single");    // single | double (logo-centred + second nav row)
   const [showCats, setShowCats] = useState(true);          // show categories in the menu
@@ -387,6 +394,11 @@ function NavigationPanel({ siteId }) {
         setNavLayout(nav.layout === "double" ? "double" : "single");
         setShowCats(nav.show_categories !== false);
         setShowBrands(!!nav.show_brands);
+        setSubcatSel(Object.fromEntries((nav.subcats || []).map((s) =>
+          [`${s.category}::${s.subcat}`, { category: s.category, subcat: s.subcat, label: s.label || s.subcat, on_home: s.on_home !== false }])));
+        setSubbrandSel(Object.fromEntries((nav.subbrands || []).map((s) =>
+          [`${s.category}::${s.brand}::${s.sub_brand}`, { category: s.category, brand: s.brand, sub_brand: s.sub_brand, label: s.label || s.sub_brand, on_home: s.on_home !== false }])));
+        setLinks(Array.isArray(nav.links) ? nav.links.map((l) => ({ label: l.label || "", url: l.url || "" })) : []);
       })
       .catch(setError);
   }, [siteId]);
@@ -412,6 +424,45 @@ function NavigationPanel({ siteId }) {
   }
   function setBrand(c, b, key, val) { setSaved(false); setBrandSel((m) => ({ ...m, [bkey(c, b)]: { ...m[bkey(c, b)], [key]: val } })); }
 
+  // ---- sub-categories ----
+  const skey = (c, s) => `${c}::${s}`;
+  async function toggleSubcatList(c) {
+    if (openSubcatCat === c) { setOpenSubcatCat(null); return; }
+    setOpenSubcatCat(c);
+    if (!subcatsAvail[c]) {
+      setSubcatsAvail((m) => ({ ...m, [c]: "loading" }));
+      try { const r = await api.hostedSiteSubcategories(siteId, c); setSubcatsAvail((m) => ({ ...m, [c]: r.subcategories || [] })); }
+      catch { setSubcatsAvail((m) => ({ ...m, [c]: [] })); }
+    }
+  }
+  function toggleSubcat(c, s) {
+    setSaved(false);
+    setSubcatSel((m) => { const k = skey(c, s); const n = { ...m }; if (n[k]) delete n[k]; else n[k] = { category: c, subcat: s, label: s, on_home: true }; return n; });
+  }
+  function setSubcat(c, s, key, val) { setSaved(false); setSubcatSel((m) => ({ ...m, [skey(c, s)]: { ...m[skey(c, s)], [key]: val } })); }
+
+  // ---- sub-brands (under a featured brand) ----
+  const sbkey = (c, b, s) => `${c}::${b}::${s}`;
+  async function toggleSubbrandList(c, b) {
+    const k = `${c}::${b}`;
+    if (openSubbrand === k) { setOpenSubbrand(null); return; }
+    setOpenSubbrand(k);
+    if (!subbrandsAvail[k]) {
+      setSubbrandsAvail((m) => ({ ...m, [k]: "loading" }));
+      try { const r = await api.hostedSiteSubBrands(siteId, c, b); setSubbrandsAvail((m) => ({ ...m, [k]: r.subbrands || [] })); }
+      catch { setSubbrandsAvail((m) => ({ ...m, [k]: [] })); }
+    }
+  }
+  function toggleSubbrand(c, b, s) {
+    setSaved(false);
+    setSubbrandSel((m) => { const k = sbkey(c, b, s); const n = { ...m }; if (n[k]) delete n[k]; else n[k] = { category: c, brand: b, sub_brand: s, label: s, on_home: true }; return n; });
+  }
+
+  // ---- custom links ----
+  function addLink() { setSaved(false); setLinks((l) => [...l, { label: "", url: "" }]); }
+  function setLink(i, key, val) { setSaved(false); setLinks((l) => l.map((row, j) => j === i ? { ...row, [key]: val } : row)); }
+  function removeLink(i) { setSaved(false); setLinks((l) => l.filter((_, j) => j !== i)); }
+
   async function save() {
     setBusy(true); setError(null); setSaved(false);
     try {
@@ -422,6 +473,9 @@ function NavigationPanel({ siteId }) {
         brands: Object.values(brandSel).map((v) => ({
           category: v.category, brand: v.brand, label: (v.label || v.brand).trim(), on_home: !!v.on_home, thumbnail: (v.thumbnail || "").trim(),
         })),
+        subcats: Object.values(subcatSel).map((v) => ({ category: v.category, subcat: v.subcat, label: (v.label || v.subcat).trim(), on_home: !!v.on_home })),
+        subbrands: Object.values(subbrandSel).map((v) => ({ category: v.category, brand: v.brand, sub_brand: v.sub_brand, label: (v.label || v.sub_brand).trim(), on_home: !!v.on_home })),
+        links: links.map((l) => ({ label: (l.label || "").trim(), url: (l.url || "").trim() })).filter((l) => l.label && l.url),
         hide_unmapped: hideUnmapped,
         layout: navLayout,
         show_categories: showCats,
@@ -460,7 +514,10 @@ function NavigationPanel({ siteId }) {
                   <span style={{ fontSize: 13, fontWeight: 700, color: "#1b2230", minWidth: 70, textTransform: "capitalize" }}>{c}</span>
                   <label style={ckLbl}><input type="checkbox" checked={!!it.include} onChange={(e) => set(c, "include", e.target.checked)} /> In menu</label>
                   <label style={ckLbl}><input type="checkbox" checked={!!it.on_home} onChange={(e) => set(c, "on_home", e.target.checked)} /> On home</label>
-                  <button type="button" onClick={() => toggleBrandList(c)} style={{ marginLeft: "auto", ...linkBtn }}>
+                  <button type="button" onClick={() => toggleSubcatList(c)} style={{ marginLeft: "auto", ...linkBtn }}>
+                    {openSubcatCat === c ? "Hide sub-cats ▲" : "Sub-cats ▼"}
+                  </button>
+                  <button type="button" onClick={() => toggleBrandList(c)} style={{ ...linkBtn }}>
                     {openCat === c ? "Hide brands ▲" : "Brands ▼"}
                   </button>
                 </div>
@@ -468,6 +525,39 @@ function NavigationPanel({ siteId }) {
                   <input style={inputStyle} value={it.label || ""} onChange={(e) => set(c, "label", e.target.value)} placeholder={`Menu label (${cap(c)})`} />
                   <input style={inputStyle} value={it.thumbnail || ""} onChange={(e) => set(c, "thumbnail", e.target.value)} placeholder="Thumbnail image URL (optional)" />
                 </div>
+
+                {openSubcatCat === c && (() => {
+                  const sav = subcatsAvail[c];
+                  return (
+                    <div style={{ marginTop: 10, borderTop: "1px dashed #e6e9f0", paddingTop: 10 }}>
+                      <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 0.4, color: "#9aa3b2", marginBottom: 6 }}>Featured sub-categories in {cap(c)}</div>
+                      {sav === "loading" || !sav ? <Spinner msg="Loading…" /> : sav.length === 0 ? (
+                        <div style={{ fontSize: 12, color: "#9aa3b2" }}>No sub-categories in this category yet.</div>
+                      ) : (
+                        <div style={{ maxHeight: 240, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+                          {sav.map((sc) => {
+                            const sel = subcatSel[skey(c, sc.name)];
+                            return (
+                              <div key={sc.name} style={{ border: "1px solid #f0f2f6", borderRadius: 8, padding: "7px 9px" }}>
+                                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, cursor: "pointer" }}>
+                                  <input type="checkbox" checked={!!sel} onChange={() => toggleSubcat(c, sc.name)} />
+                                  <span style={{ color: "#1b2230" }}>{sc.name}</span>
+                                  <span style={{ color: "#b3bccb", fontSize: 11 }}>{sc.count}</span>
+                                </label>
+                                {sel && (
+                                  <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 6, marginTop: 6 }}>
+                                    <input style={inputStyle} value={sel.label || ""} onChange={(e) => setSubcat(c, sc.name, "label", e.target.value)} placeholder={`Label (${sc.name})`} />
+                                    <label style={{ ...ckLbl, whiteSpace: "nowrap" }}><input type="checkbox" checked={sel.on_home !== false} onChange={(e) => setSubcat(c, sc.name, "on_home", e.target.checked)} /> Home</label>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {openCat === c && (
                   <div style={{ marginTop: 10, borderTop: "1px dashed #e6e9f0", paddingTop: 10 }}>
@@ -491,13 +581,33 @@ function NavigationPanel({ siteId }) {
                                 <span style={{ color: "#1b2230" }}>{br.name}</span>
                                 <span style={{ color: "#b3bccb", fontSize: 11 }}>{br.count}</span>
                               </label>
-                              {sel && (
+                              {sel && (<>
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto", gap: 6, marginTop: 6 }}>
                                   <input style={inputStyle} value={sel.label || ""} onChange={(e) => setBrand(c, br.name, "label", e.target.value)} placeholder={`Label (${br.name})`} />
                                   <input style={inputStyle} value={sel.thumbnail || ""} onChange={(e) => setBrand(c, br.name, "thumbnail", e.target.value)} placeholder="Thumbnail URL" />
                                   <label style={{ ...ckLbl, whiteSpace: "nowrap" }}><input type="checkbox" checked={sel.on_home !== false} onChange={(e) => setBrand(c, br.name, "on_home", e.target.checked)} /> Home</label>
                                 </div>
-                              )}
+                                <button type="button" onClick={() => toggleSubbrandList(c, br.name)} style={{ ...linkBtn, marginTop: 6 }}>
+                                  {openSubbrand === `${c}::${br.name}` ? "Hide sub-brands ▲" : "Sub-brands ▼"}
+                                </button>
+                                {openSubbrand === `${c}::${br.name}` && (() => {
+                                  const sbav = subbrandsAvail[`${c}::${br.name}`];
+                                  return sbav === "loading" || !sbav ? <Spinner msg="Loading…" /> : sbav.length === 0 ? (
+                                    <div style={{ fontSize: 11.5, color: "#9aa3b2", marginTop: 4 }}>No sub-brands for {br.name} here.</div>
+                                  ) : (
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
+                                      {sbav.map((sb) => {
+                                        const on = !!subbrandSel[sbkey(c, br.name, sb.name)];
+                                        return (
+                                          <label key={sb.name} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11.5, border: `1px solid ${on ? "#C8FF3D" : "#eef1f6"}`, borderRadius: 6, padding: "3px 7px", cursor: "pointer" }}>
+                                            <input type="checkbox" checked={on} onChange={() => toggleSubbrand(c, br.name, sb.name)} /> {sb.name} <span style={{ color: "#b3bccb" }}>{sb.count}</span>
+                                          </label>
+                                        );
+                                      })}
+                                    </div>
+                                  );
+                                })()}
+                              </>)}
                             </div>
                           );
                         })}
@@ -511,6 +621,20 @@ function NavigationPanel({ siteId }) {
               </div>
             );
           })}
+
+          <div style={{ borderTop: "1px solid #eef1f6", marginTop: 14, paddingTop: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#1b2230", marginBottom: 4 }}>Custom links</div>
+            <div style={{ fontSize: 11, color: "#9aa3b2", marginBottom: 8 }}>Add any links you like to the menu — a sale page, a full external URL, a lookbook. Add as many as you want.</div>
+            {links.map((l, i) => (
+              <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1.6fr auto", gap: 6, marginBottom: 6 }}>
+                <input style={inputStyle} value={l.label} onChange={(e) => setLink(i, "label", e.target.value)} placeholder="Label (e.g. Sale)" />
+                <input style={inputStyle} value={l.url} onChange={(e) => setLink(i, "url", e.target.value)} placeholder="/c/shoes?sort=discount  or  https://…" />
+                <button type="button" onClick={() => removeLink(i)} style={{ border: "none", background: "none", cursor: "pointer", color: "#c4505f", fontSize: 16 }} title="Remove">✕</button>
+              </div>
+            ))}
+            <button type="button" onClick={addLink} style={{ ...linkBtn, marginTop: 2 }}>+ Add link</button>
+          </div>
+
           <div style={{ borderTop: "1px solid #eef1f6", marginTop: 14, paddingTop: 12 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: "#1b2230", marginBottom: 8 }}>Menu style</div>
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 8 }}>
