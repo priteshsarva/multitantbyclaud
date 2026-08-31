@@ -126,6 +126,8 @@ export const api = {
   hostedSiteBrands: (id, category) => req(`/portal/hosted-sites/${id}/brands?category=${encodeURIComponent(category)}`),
   hostedSiteSubcategories: (id, category) => req(`/portal/hosted-sites/${id}/subcategories?category=${encodeURIComponent(category)}`),
   hostedSiteSubBrands: (id, category, brand) => req(`/portal/hosted-sites/${id}/subbrands?category=${encodeURIComponent(category)}&brand=${encodeURIComponent(brand)}`),
+  hostedSiteAllBrands: (id) => req(`/portal/hosted-sites/${id}/all-brands`),
+  hostedSiteSaveBrandMap: (id, raw, canonical, secondary) => req(`/portal/hosted-sites/${id}/brand-map`, { method: "PUT", body: { raw, canonical, secondary } }),
   saveHostedSiteSources: (id, source_ids) =>
     req(`/portal/hosted-sites/${id}/sources`, { method: "PUT", body: { source_ids } }),
   hostedSitePresets: () => req("/portal/hosted-sites/presets"),

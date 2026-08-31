@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { ExternalLink, Plus, ArrowLeft } from "lucide-react";
+import React, { useEffect, useState, useMemo } from "react";
+import { ExternalLink, Plus, ArrowLeft, Search, ArrowRight } from "lucide-react";
 import { api } from "../api.js";
 import { C, PageHead, Card, Btn, Badge, Field, inputStyle, Spinner, ErrorNote, Empty, Modal, fmtDate, storeUrl } from "../ui.jsx";
 
@@ -150,6 +150,8 @@ function StoreDetail({ site, onBack, onChanged }) {
           <ProductsPanel siteId={site.id} onChanged={bumpSrc} />
           <div style={{ height: 18 }} />
           <NavigationPanel key={srcVer} siteId={site.id} />
+          <div style={{ height: 18 }} />
+          <StoreBrandMapPanel key={`bm${srcVer}`} siteId={site.id} />
           <div style={{ height: 18 }} />
           <HomepagePresetPanel siteId={site.id} />
           <div style={{ height: 18 }} />
@@ -350,6 +352,71 @@ function ProductsPanel({ siteId, onChanged }) {
 // nav = { items:  [{ category, label, on_home, thumbnail }],
 //         brands: [{ category, brand, label, on_home, thumbnail }] }
 // Empty items = storefront shows all attached categories in default order.
+// Per-store brand mapping — map the store's own raw scraped brands to a clean
+// primary brand (+ optional sub-brand), right in the store editor. Writes to the
+// GLOBAL brand map (brands are shared across stores). Unmapped brands first.
+const StoreBrandRow = React.memo(function StoreBrandRow({ siteId, b, onSaved, onError }) {
+  const [primary, setPrimary] = useState(b.canonical || "");
+  const [secondary, setSecondary] = useState(b.secondary || "");
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { setPrimary(b.canonical || ""); setSecondary(b.secondary || ""); }, [b.canonical, b.secondary]);
+  async function save() {
+    const p = primary.trim(); if (!p) return;
+    setBusy(true);
+    try { await api.hostedSiteSaveBrandMap(siteId, b.name, p, secondary.trim()); onSaved(); }
+    catch (e) { onError(e); } finally { setBusy(false); }
+  }
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr 1fr auto", gap: 7, alignItems: "center", border: "1px solid #eef1f6", borderRadius: 8, padding: "7px 9px" }}>
+      <div style={{ fontSize: 12.5, minWidth: 0 }}>
+        <div style={{ color: b.canonical ? "#1b2230" : "#a23a4b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.name}</div>
+        <div style={{ fontSize: 10.5, color: "#b3bccb" }}>{b.count}{b.canonical ? "" : " · unmapped"}</div>
+      </div>
+      <ArrowRight size={13} color="#c4ccd8" />
+      <input style={{ ...inputStyle, padding: "6px 8px", fontSize: 12.5 }} placeholder="Primary…" value={primary} onChange={(e) => setPrimary(e.target.value)} />
+      <input style={{ ...inputStyle, padding: "6px 8px", fontSize: 12.5 }} placeholder="Sub-brand…" value={secondary} onChange={(e) => setSecondary(e.target.value)} />
+      <Btn small tone="lime" disabled={busy} onClick={save}>{b.canonical ? "Update" : "Map"}</Btn>
+    </div>
+  );
+});
+
+function StoreBrandMapPanel({ siteId }) {
+  const [brands, setBrands] = useState(null);
+  const [q, setQ] = useState("");
+  const [error, setError] = useState(null);
+  function load() { api.hostedSiteAllBrands(siteId).then((r) => setBrands(r.brands || [])).catch(setError); }
+  useEffect(() => { load(); }, [siteId]); // eslint-disable-line react-hooks/exhaustive-deps
+  const shown = useMemo(() => {
+    if (!brands) return null;
+    const ql = q.trim().toLowerCase();
+    return brands
+      .filter((b) => !ql || b.name.toLowerCase().includes(ql) || (b.canonical || "").toLowerCase().includes(ql))
+      .sort((a, b) => ((a.canonical ? 1 : 0) - (b.canonical ? 1 : 0)) || a.name.localeCompare(b.name));
+  }, [brands, q]);
+  const mapped = (brands || []).filter((b) => b.canonical).length;
+  return (
+    <Card>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+        <div style={{ fontWeight: 700, fontSize: 15 }}>Brand mapping</div>
+        {brands && <div style={{ fontSize: 11.5, color: "#9aa3b2" }}>{brands.length} in this store · {mapped} mapped</div>}
+      </div>
+      <div style={{ fontSize: 12.5, color: "#6b7688", marginBottom: 10 }}>
+        Map this store's raw scraped brands to a clean primary brand (and optional sub-brand). Applies across every storefront. Unmapped first.
+      </div>
+      <ErrorNote error={error} />
+      <div style={{ position: "relative", marginBottom: 10 }}>
+        <Search size={15} style={{ position: "absolute", left: 11, top: 10, color: "#9aa3b2" }} />
+        <input style={{ ...inputStyle, paddingLeft: 32 }} placeholder="Search brands…" value={q} onChange={(e) => setQ(e.target.value)} />
+      </div>
+      {!shown ? <Spinner /> : shown.length === 0 ? <Empty msg="No brands." /> : (
+        <div style={{ maxHeight: 420, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+          {shown.map((b) => <StoreBrandRow key={b.name} siteId={siteId} b={b} onSaved={load} onError={setError} />)}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 function NavigationPanel({ siteId }) {
   const [order, setOrder] = useState(null);       // category names, in display order
   const [items, setItems] = useState({});         // cat -> { include, on_home, label, thumbnail }
@@ -369,6 +436,7 @@ function NavigationPanel({ siteId }) {
   const [navLayout, setNavLayout] = useState("single");    // single | double (logo-centred + second nav row)
   const [showCats, setShowCats] = useState(true);          // show categories in the menu
   const [showBrands, setShowBrands] = useState(false);     // show featured brands in the menu
+  const [showSubcats, setShowSubcats] = useState(true);    // show featured sub-categories in the menu
   const [subcatStyle, setSubcatStyle] = useState("link");  // featured sub-categories: individual links | under their category
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -396,6 +464,7 @@ function NavigationPanel({ siteId }) {
         setNavLayout(nav.layout === "double" ? "double" : "single");
         setShowCats(nav.show_categories !== false);
         setShowBrands(!!nav.show_brands);
+        setShowSubcats(nav.show_subcats !== false);
         setSubcatStyle(nav.subcat_style === "under" ? "under" : "link");
         setSubcatSel(Object.fromEntries((nav.subcats || []).map((s) =>
           [`${s.category}::${s.subcat}`, { category: s.category, subcat: s.subcat, label: s.label || s.subcat, on_home: s.on_home !== false }])));
@@ -483,6 +552,7 @@ function NavigationPanel({ siteId }) {
         layout: navLayout,
         show_categories: showCats,
         show_brands: showBrands,
+        show_subcats: showSubcats,
         subcat_style: subcatStyle,
       };
       await api.saveHostedSiteSettings(siteId, { nav });
@@ -659,6 +729,7 @@ function NavigationPanel({ siteId }) {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
               <label style={ckLbl}><input type="checkbox" checked={showCats} onChange={(e) => { setSaved(false); setShowCats(e.target.checked); }} /> Show categories</label>
+              <label style={ckLbl}><input type="checkbox" checked={showSubcats} onChange={(e) => { setSaved(false); setShowSubcats(e.target.checked); }} /> Show featured sub-categories</label>
               <label style={ckLbl}><input type="checkbox" checked={showBrands} onChange={(e) => { setSaved(false); setShowBrands(e.target.checked); }} /> Show featured brands</label>
             </div>
             <div style={{ fontSize: 11, color: "#9aa3b2", marginTop: 5 }}>Pick either or both. Featured brands / sub-categories are the ones you tick under each category above.</div>
