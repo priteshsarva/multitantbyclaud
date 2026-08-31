@@ -356,6 +356,7 @@ function NavigationPanel({ siteId }) {
   const [brandsAvail, setBrandsAvail] = useState({}); // cat -> [{name,count}] | "loading"
   const [brandSel, setBrandSel] = useState({});   // "cat brand" -> { on_home, label, thumbnail } (presence = featured)
   const [openCat, setOpenCat] = useState(null);   // which category's brand list is expanded
+  const [brandQuery, setBrandQuery] = useState({}); // cat -> search term for the featured-brand picker
   const [hideUnmapped, setHideUnmapped] = useState(false); // hide sub-categories not renamed in your map
   const [navLayout, setNavLayout] = useState("single");    // single | double (logo-centred + second nav row)
   const [showCats, setShowCats] = useState(true);          // show categories in the menu
@@ -473,9 +474,15 @@ function NavigationPanel({ siteId }) {
                     <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 0.4, color: "#9aa3b2", marginBottom: 6 }}>Featured brands in {cap(c)}</div>
                     {av === "loading" || !av ? <Spinner msg="Loading brands…" /> : av.length === 0 ? (
                       <div style={{ fontSize: 12, color: "#9aa3b2" }}>No brands with in-stock products in this category yet.</div>
-                    ) : (
+                    ) : (() => {
+                      const q = (brandQuery[c] || "").toLowerCase();
+                      const shown = q ? av.filter((br) => br.name.toLowerCase().includes(q)) : av;
+                      return (
+                      <>
+                      <input style={{ ...inputStyle, marginBottom: 8 }} value={brandQuery[c] || ""} onChange={(e) => setBrandQuery((m) => ({ ...m, [c]: e.target.value }))} placeholder={`Search brands (${av.length})…`} />
+                      {shown.length === 0 ? <div style={{ fontSize: 12, color: "#9aa3b2" }}>No brands match.</div> : (
                       <div style={{ maxHeight: 260, overflowY: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
-                        {av.map((br) => {
+                        {shown.map((br) => {
                           const sel = brandSel[bkey(c, br.name)];
                           return (
                             <div key={br.name} style={{ border: "1px solid #f0f2f6", borderRadius: 8, padding: "7px 9px" }}>
@@ -495,7 +502,10 @@ function NavigationPanel({ siteId }) {
                           );
                         })}
                       </div>
-                    )}
+                      )}
+                      </>
+                      );
+                    })()}
                   </div>
                 )}
               </div>
